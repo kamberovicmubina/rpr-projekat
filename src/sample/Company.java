@@ -1,20 +1,46 @@
 package sample;
 
-import java.util.List;
+import javafx.collections.ObservableList;
+
 
 public class Company {
     private String name;
     private String address;
-    private List<Department> departments;
-    private List<Employee> employees;
-    private List<Client> clients;
+    private ObservableList<Department> departments;
+    private ObservableList<Employee> employees;
+    private ObservableList<Client> clients;
     private Person owner;
 
-    public Company(String name, String address, List<Department> departments, List<Employee> employees, Person owner) {
+    public ObservableList<Department> getDepartments() {
+        return departments;
+    }
+
+    public void setDepartments(ObservableList<Department> departments) {
+        this.departments = departments;
+    }
+
+    public ObservableList<Employee> getEmployees() {
+        return employees;
+    }
+
+    public void setEmployees(ObservableList<Employee> employees) {
+        this.employees = employees;
+    }
+
+    public ObservableList<Client> getClients() {
+        return clients;
+    }
+
+    public void setClients(ObservableList<Client> clients) {
+        this.clients = clients;
+    }
+
+    public Company(String name, String address, ObservableList<Department> departments, ObservableList<Employee> employees, ObservableList<Client> clients, Person owner) {
         this.name = name;
         this.address = address;
         this.departments = departments;
         this.employees = employees;
+        this.clients = clients;
         this.owner = owner;
     }
 
@@ -34,21 +60,6 @@ public class Company {
         this.address = address;
     }
 
-    public List<Department> getDepartments() {
-        return departments;
-    }
-
-    public void setDepartments(List<Department> departments) {
-        this.departments = departments;
-    }
-
-    public List<Employee> getEmployees() {
-        return employees;
-    }
-
-    public void setEmployees(List<Employee> employees) {
-        this.employees = employees;
-    }
 
     public Person getOwner() {
         return owner;

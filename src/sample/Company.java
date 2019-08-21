@@ -10,6 +10,15 @@ public class Company {
     private ObservableList<Employee> employees;
     private ObservableList<Client> clients;
     private Person owner;
+    private ObservableList<String> services;
+
+    public ObservableList<String> getServices() {
+        return services;
+    }
+
+    public void setServices(ObservableList<String> services) {
+        this.services = services;
+    }
 
     public ObservableList<Department> getDepartments() {
         return departments;
@@ -35,13 +44,14 @@ public class Company {
         this.clients = clients;
     }
 
-    public Company(String name, String address, ObservableList<Department> departments, ObservableList<Employee> employees, ObservableList<Client> clients, Person owner) {
+    public Company(String name, String address, ObservableList<Department> departments, ObservableList<Employee> employees, ObservableList<Client> clients, Person owner, ObservableList<String> services) {
         this.name = name;
         this.address = address;
         this.departments = departments;
         this.employees = employees;
         this.clients = clients;
         this.owner = owner;
+        this.services = services;
     }
 
     public String getName() {
@@ -69,7 +79,7 @@ public class Company {
         this.owner = owner;
     }
 
-    /*public void addClient(Client newClient) {
+    public void addClient(Client newClient) {
         clients.add(newClient);
     }
 
@@ -79,6 +89,6 @@ public class Company {
 
     public void changeClient(Client oldClient, Client newClient) {
 
-    }*/
+    }
 
 }

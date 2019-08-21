@@ -7,7 +7,7 @@
 <?import javafx.scene.layout.HBox?>
 <?import javafx.scene.layout.VBox?>
 
-<BorderPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="400.0" prefWidth="600.0" xmlns="http://javafx.com/javafx/8.0.172-ea" xmlns:fx="http://javafx.com/fxml/1">
+<BorderPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="400.0" prefWidth="600.0" xmlns="http://javafx.com/javafx/8.0.172-ea" xmlns:fx="http://javafx.com/fxml/1" >
    <top>
       <Label prefHeight="69.0" prefWidth="256.0" text="CLIENT RELATIONSHIP MANAGEMENT&#10;BUILDING COMPANY" textAlignment="CENTER" BorderPane.alignment="CENTER" />
    </top>
@@ -16,6 +16,7 @@
          <children>
             <Label alignment="CENTER" text="Clients" />
             <ListView fx:id="clientList" prefHeight="306.0" prefWidth="400.0" />
+            <Button fx:id="addClientButton" mnemonicParsing="false" onAction="#onAdd" text="Add client" />
          </children>
       </VBox>
    </center>
@@ -23,7 +24,7 @@
       <VBox prefHeight="200.0" prefWidth="100.0" BorderPane.alignment="CENTER">
          <children>
             <Label alignment="CENTER" contentDisplay="CENTER" text="Our services" textAlignment="CENTER" />
-            <ListView prefHeight="307.0" prefWidth="100.0" />
+            <ListView fx:id="servicesList" prefHeight="307.0" prefWidth="100.0" />
          </children>
       </VBox>
    </left>
@@ -39,9 +40,9 @@
    <bottom>
       <HBox prefHeight="33.0" prefWidth="600.0" BorderPane.alignment="CENTER">
          <children>
-            <Label text="Building company" />
-            <Label text="Address" />
-            <Label text="Owner" />
+            <Label fx:id="companyName" text="Building company, " />
+            <Label fx:id="companyAddress" text="Obala 2, " />
+            <Label fx:id="companyOwner" text="Owner" />
          </children>
       </HBox>
    </bottom>

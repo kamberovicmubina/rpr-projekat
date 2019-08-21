@@ -3,6 +3,7 @@
 package sample;
 
 import javafx.application.Application;
+import javafx.beans.Observable;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.fxml.FXMLLoader;
@@ -23,7 +24,10 @@ public class Main extends Application {
         ObservableList<Client> clients = FXCollections.observableArrayList();
         Date date = new Date(1998, 7,27);
         clients.add(new Client("Mubina Kamberović", date, "D. Ozme", "018732873", "mub@gmail.com", null ));
-        Company company = new Company("Building company", "Obala 2", departments, employees, clients, null);
+        clients.add(new Client("Novi klijent", date, "Obala", "88923", "mail", null));
+        ObservableList<String> services = FXCollections.observableArrayList();
+        services.addAll("General Contracting", "Pre-Construction", "Design-Build Services", "Construction Management");
+        Company company = new Company("Building company", "Obala 2", departments, employees, clients, null, services);
 
         FXMLLoader loader = new FXMLLoader(getClass().getResource("/fxml/sample.fxml"));
         loader.setController(new Controller(company));

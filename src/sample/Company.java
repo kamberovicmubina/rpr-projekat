@@ -11,6 +11,15 @@ public class Company {
     private ObservableList<Client> clients;
     private Person owner;
     private ObservableList<String> services;
+    private Client clickedClient;
+
+    public Client getClickedClient() {
+        return clickedClient;
+    }
+
+    public void setClickedClient(Client clickedClient) {
+        this.clickedClient = clickedClient;
+    }
 
     public ObservableList<String> getServices() {
         return services;

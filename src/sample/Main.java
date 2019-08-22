@@ -11,8 +11,7 @@ import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.stage.Stage;
 
-import java.util.Date;
-
+import java.time.LocalDate;
 import static javafx.scene.layout.Region.USE_COMPUTED_SIZE;
 
 public class Main extends Application {
@@ -22,7 +21,7 @@ public class Main extends Application {
         ObservableList<Department> departments = FXCollections.observableArrayList();
         ObservableList<Employee> employees = FXCollections.observableArrayList();
         ObservableList<Client> clients = FXCollections.observableArrayList();
-        Date date = new Date(1998, 7,27);
+        LocalDate date = LocalDate.of(1998, 7,27);
         clients.add(new Client("Mubina Kamberović", date, "D. Ozme", "018732873", "mub@gmail.com", null ));
         clients.add(new Client("Novi klijent", date, "Obala", "88923", "mail", null));
         ObservableList<String> services = FXCollections.observableArrayList();

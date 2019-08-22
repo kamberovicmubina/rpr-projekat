@@ -24,10 +24,9 @@ import java.net.URL;
 import java.util.ResourceBundle;
 
 public class Controller implements Initializable {
-    public ListView<String> clientList;
+    public ListView<Client> clientList;
     public ListView<String> servicesList;
     public Button addClientButton;
-    private ObservableList<String> clientNames = FXCollections.observableArrayList();
     private ObservableList<String> servicesNames = FXCollections.observableArrayList();
 
     private Company companyModel;
@@ -37,24 +36,31 @@ public class Controller implements Initializable {
         this.companyModel = companyModel;
     }
 
-
-
     @Override
     public void initialize(URL url, ResourceBundle resourceBundle) {
-        for (Client c : companyModel.getClients()) {
-            clientNames.add(c.getName());
-        }
-        clientList.setItems(clientNames);
+        clientList.setItems(companyModel.getClients());
 
-        clientList.getSelectionModel().selectedItemProperty().addListener(new ChangeListener<String>() {
-            public void changed(ObservableValue<? extends String> observable, String oldValue, String newValue){
-                if (newValue != null) {
-                    FXMLLoader loader = new FXMLLoader(getClass().getResource("/fxml/client.fxml"));
-                    openNewWindow(loader);
+        clientList.getSelectionModel().selectedItemProperty().addListener(new ChangeListener<Client>() {
+            @Override
+            public void changed(ObservableValue<? extends Client> observableValue, Client client, Client t1) {
+                companyModel.setClickedClient(clientList.getSelectionModel().getSelectedItem());
+                FXMLLoader loader = new FXMLLoader(getClass().getResource("/fxml/client.fxml"));
+                loader.setController(new ClientController(companyModel));
+                Parent root = null;
+                try {
+                    root = loader.load();
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+                if (root != null) {
+                    Stage secondaryStage = new Stage();
+                    secondaryStage.setTitle(companyModel.getClickedClient().getName());
+                    secondaryStage.setScene(new Scene(root, Region.USE_COMPUTED_SIZE, Region.USE_COMPUTED_SIZE));
+                    secondaryStage.initModality(Modality.APPLICATION_MODAL);
+                    secondaryStage.show();
                 }
             }
         });
-
         servicesNames.addAll(companyModel.getServices());
         servicesList.setItems(servicesNames);
 
@@ -63,10 +69,6 @@ public class Controller implements Initializable {
 
     public void onAdd() {
         FXMLLoader loader = new FXMLLoader(getClass().getResource("/fxml/newClient.fxml"));
-        openNewWindow(loader);
-    }
-
-    public void openNewWindow(FXMLLoader loader) {
         Parent root = null;
         try {
             root = loader.load();
@@ -81,4 +83,5 @@ public class Controller implements Initializable {
             secondaryStage.show();
         }
     }
+
 }

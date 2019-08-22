@@ -1,15 +1,16 @@
 package sample;
 
+import java.time.LocalDate;
 import java.util.Date;
 
 public class Person {
     private String name;
-    private Date dateOfBirth;
+    private LocalDate dateOfBirth;
     private String address;
     private String phoneNumber;
     private String eMail;
 
-    public Person(String name, Date dateOfBirth, String address, String phoneNumber, String eMail) {
+    public Person(String name, LocalDate dateOfBirth, String address, String phoneNumber, String eMail) {
         this.name = name;
         this.dateOfBirth = dateOfBirth;
         this.address = address;
@@ -25,11 +26,11 @@ public class Person {
         this.name = name;
     }
 
-    public Date getDateOfBirth() {
+    public LocalDate getDateOfBirth() {
         return dateOfBirth;
     }
 
-    public void setDateOfBirth(Date dateOfBirth) {
+    public void setDateOfBirth(LocalDate dateOfBirth) {
         this.dateOfBirth = dateOfBirth;
     }
 
@@ -49,11 +50,11 @@ public class Person {
         this.phoneNumber = phoneNumber;
     }
 
-    public String geteMail() {
+    public String getEMail() {
         return eMail;
     }
 
-    public void seteMail(String eMail) {
+    public void setEMail(String eMail) {
         this.eMail = eMail;
     }
 }

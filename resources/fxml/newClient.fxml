@@ -38,4 +38,3 @@
         <Button mnemonicParsing="false" text="CANCEL" GridPane.rowIndex="6" />
     </children>
 </GridPane>
-

@@ -13,7 +13,6 @@ import javafx.fxml.Initializable;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
-import javafx.scene.control.Label;
 import javafx.scene.control.ListView;
 import javafx.scene.layout.Region;
 import javafx.stage.Modality;
@@ -83,5 +82,4 @@ public class Controller implements Initializable {
             secondaryStage.show();
         }
     }
-
 }

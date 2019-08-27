@@ -1,10 +1,17 @@
 package sample;
 
+import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
+import javafx.scene.Parent;
+import javafx.scene.Scene;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
 import javafx.scene.control.cell.PropertyValueFactory;
+import javafx.scene.layout.Region;
+import javafx.stage.Modality;
+import javafx.stage.Stage;
 
+import java.io.IOException;
 import java.net.URL;
 import java.time.LocalDate;
 import java.util.ResourceBundle;
@@ -30,7 +37,21 @@ public class ContractsController implements Initializable {
     }
 
     public void onAddContract () {
-
+        FXMLLoader loader = new FXMLLoader(getClass().getResource("/fxml/addContract.fxml"));
+        loader.setController(new AddContractController(companyModel));
+        Parent root = null;
+        try {
+            root = loader.load();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        if (root != null) {
+            Stage secondaryStage = new Stage();
+            secondaryStage.setTitle("Add new client contract");
+            secondaryStage.setScene(new Scene(root, Region.USE_COMPUTED_SIZE, Region.USE_COMPUTED_SIZE));
+            secondaryStage.initModality(Modality.APPLICATION_MODAL);
+            secondaryStage.show();
+        }
     }
 
     public void onDeleteContract () {

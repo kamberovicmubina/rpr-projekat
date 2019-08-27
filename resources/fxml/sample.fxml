@@ -21,9 +21,9 @@
                <contextMenu>
                   <ContextMenu>
                     <items>
-                        <MenuItem fx:id="addClient" mnemonicParsing="false" onAction="#onAdd" text="Add new client" />
-                        <MenuItem fx:id="deleteClient" mnemonicParsing="false" onAction="#onDelete" text="Delete client" />
-                      <MenuItem fx:id="changeClient" mnemonicParsing="false" onAction="#onChange" text="Change client" />
+                        <MenuItem fx:id="addClient" mnemonicParsing="true" onAction="#onAdd" text="_Add new client" />
+                        <MenuItem fx:id="deleteClient" mnemonicParsing="true" onAction="#onDelete" text="_Delete client" />
+                      <MenuItem fx:id="changeClient" mnemonicParsing="true" onAction="#onChange" text="_Change client" />
                     </items>
                   </ContextMenu>
                </contextMenu></ListView>

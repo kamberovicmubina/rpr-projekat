@@ -114,7 +114,7 @@ public class Controller implements Initializable {
                 secondaryStage.show();
             }
         } else {
-            Alert alert = new Alert(Alert.AlertType.INFORMATION, "Please select the client you want to delete!");
+            Alert alert = new Alert(Alert.AlertType.INFORMATION, "Please select the client you want to change!");
             alert.setTitle("Error");
             alert.setHeaderText(null);
             alert.showAndWait();

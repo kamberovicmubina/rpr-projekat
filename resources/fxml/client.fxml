@@ -1,14 +1,19 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
+<?import java.net.URL?>
 <?import javafx.scene.control.Button?>
 <?import javafx.scene.control.DatePicker?>
 <?import javafx.scene.control.Label?>
 <?import javafx.scene.control.TextField?>
 <?import javafx.scene.layout.ColumnConstraints?>
 <?import javafx.scene.layout.GridPane?>
+<?import javafx.scene.layout.HBox?>
 <?import javafx.scene.layout.RowConstraints?>
 
 <GridPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="400.0" prefWidth="600.0" xmlns="http://javafx.com/javafx/8.0.172-ea" xmlns:fx="http://javafx.com/fxml/1">
+    <stylesheets>
+        <URL value="@/css/style.css" />
+    </stylesheets>
     <columnConstraints>
         <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
         <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
@@ -34,7 +39,12 @@
         <TextField fx:id="phoneField" GridPane.columnIndex="1" GridPane.rowIndex="3" />
         <TextField fx:id="eMailField" GridPane.columnIndex="1" GridPane.rowIndex="4" />
         <DatePicker fx:id="dateOfBirthPicker" GridPane.columnIndex="1" GridPane.rowIndex="1" />
-        <Button mnemonicParsing="false" text="SAVE" GridPane.columnIndex="1" GridPane.rowIndex="6" />
-        <Button mnemonicParsing="false" text="CANCEL" GridPane.rowIndex="6" />
+      <HBox prefHeight="100.0" prefWidth="200.0" GridPane.columnIndex="1" GridPane.rowIndex="6">
+         <children>
+            <Button fx:id="saveButton" mnemonicParsing="false" onAction="#saveClicked" text="SAVE" />
+            <Button fx:id="deleteButton" mnemonicParsing="false" onAction="#deleteClicked" text="DELETE" />
+            <Button fx:id="cancelButton" mnemonicParsing="false" onAction="#cancelClicked" text="CANCEL" />
+         </children>
+      </HBox>
     </children>
 </GridPane>

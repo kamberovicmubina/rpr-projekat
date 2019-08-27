@@ -1,5 +1,8 @@
 package sample;
 
+import javafx.beans.property.ObjectProperty;
+import javafx.beans.property.SimpleObjectProperty;
+import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 
 
@@ -8,17 +11,30 @@ public class Company {
     private String address;
     private ObservableList<Department> departments;
     private ObservableList<Employee> employees;
-    private static ObservableList<Client> clients;
+    private static ObservableList<Client> clients = FXCollections.observableArrayList();
     private Person owner;
     private ObservableList<String> services;
-    private Client clickedClient;
+    //private Client clickedClient;
+    private ObjectProperty<Client> clickedClient = new SimpleObjectProperty<>();
 
-    public Client getClickedClient() {
+   /* public Client getClickedClient() {
         return clickedClient;
     }
 
     public void setClickedClient(Client clickedClient) {
         this.clickedClient = clickedClient;
+    }*/
+
+    public ObjectProperty<Client> clickedClientProperty()  {
+        return clickedClient;
+    }
+
+    public Client getClickedClient() {
+        return clickedClient.get();
+    }
+
+    public void setClickedClient(Client c) {
+        clickedClient.set(c);
     }
 
     public ObservableList<String> getServices() {
@@ -92,12 +108,24 @@ public class Company {
         clients.add(newClient);
     }
 
-    public void removeClient(Client client) {
-        clients.remove(client);
+    public void removeClient() {
+        int i = 0;
+        for (Client c : getClients()) {
+            if (c.equals(clickedClient.getValue())) {
+                clients.remove(i, i+1); // we delete ith client from the list
+                clickedClient.set(null);
+                break;
+            }
+            i++;
+        }
     }
 
     public void changeClient(Client oldClient, Client newClient) {
-
+        oldClient.setName(newClient.getName());
+        oldClient.setDateOfBirth(newClient.getDateOfBirth());
+        oldClient.setAddress(newClient.getAddress());
+        oldClient.setPhoneNumber(newClient.getPhoneNumber());
+        oldClient.setEMail(newClient.getEMail());
     }
 
 }

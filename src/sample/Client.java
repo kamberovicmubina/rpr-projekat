@@ -1,22 +1,26 @@
 package sample;
 
+import javafx.beans.Observable;
+import javafx.collections.FXCollections;
+import javafx.collections.ObservableList;
+
 import java.time.LocalDate;
 import java.util.Date;
 import java.util.List;
 
 public class Client extends Person {
-    List<Contract> contractList;
+    ObservableList<Contract> contractList = FXCollections.observableArrayList();
 
-    public Client(String name, LocalDate dateOfBirth, String address, String phoneNumber, String eMail, List<Contract> contractList) {
+    public Client(String name, LocalDate dateOfBirth, String address, String phoneNumber, String eMail, ObservableList<Contract> contractList) {
         super(name, dateOfBirth, address, phoneNumber, eMail);
         this.contractList = contractList;
     }
 
-    public List<Contract> getContractList() {
+    public ObservableList<Contract> getContractList() {
         return contractList;
     }
 
-    public void setContractList(List<Contract> contractList) {
+    public void setContractList(ObservableList<Contract> contractList) {
         this.contractList = contractList;
     }
 

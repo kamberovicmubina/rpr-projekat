@@ -33,6 +33,7 @@ public class ClientController implements Initializable {
     public Button saveButton;
     public Button cancelButton;
     public Button deleteButton;
+    public Hyperlink contractsHyperlink;
     private SimpleStringProperty nameProperty;
     private SimpleStringProperty addressProperty;
     private SimpleStringProperty phoneProperty;
@@ -183,5 +184,23 @@ public class ClientController implements Initializable {
             cancelClicked();
         }
 
+    }
+
+    public void contractsClicked () {
+        FXMLLoader loader = new FXMLLoader(getClass().getResource("/fxml/contracts.fxml"));
+        loader.setController(new ContractsController(companyModel));
+        Parent root = null;
+        try {
+            root = loader.load();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        if (root != null) {
+            Stage secondaryStage = new Stage();
+            secondaryStage.setTitle("Client contracts");
+            secondaryStage.setScene(new Scene(root, Region.USE_COMPUTED_SIZE, Region.USE_COMPUTED_SIZE));
+            secondaryStage.initModality(Modality.APPLICATION_MODAL);
+            secondaryStage.show();
+        }
     }
 }

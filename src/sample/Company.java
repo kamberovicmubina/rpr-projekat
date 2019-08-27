@@ -14,16 +14,7 @@ public class Company {
     private static ObservableList<Client> clients = FXCollections.observableArrayList();
     private Person owner;
     private ObservableList<String> services;
-    //private Client clickedClient;
     private ObjectProperty<Client> clickedClient = new SimpleObjectProperty<>();
-
-   /* public Client getClickedClient() {
-        return clickedClient;
-    }
-
-    public void setClickedClient(Client clickedClient) {
-        this.clickedClient = clickedClient;
-    }*/
 
     public ObjectProperty<Client> clickedClientProperty()  {
         return clickedClient;

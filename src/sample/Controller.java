@@ -64,28 +64,6 @@ public class Controller implements Initializable {
                 }
             }
         });
-
-        /*clientList.getSelectionModel().selectedItemProperty().addListener(new ChangeListener<Client>() {
-            @Override
-            public void changed(ObservableValue<? extends Client> observableValue, Client client, Client t1) {
-                companyModel.setClickedClient(clientList.getSelectionModel().getSelectedItem());
-                FXMLLoader loader = new FXMLLoader(getClass().getResource("/fxml/client.fxml"));
-                loader.setController(new ClientController(companyModel));
-                Parent root = null;
-                try {
-                    root = loader.load();
-                } catch (IOException e) {
-                    e.printStackTrace();
-                }
-                if (root != null) {
-                    Stage secondaryStage = new Stage();
-                    secondaryStage.setTitle(companyModel.getClickedClient().getName());
-                    secondaryStage.setScene(new Scene(root, Region.USE_COMPUTED_SIZE, Region.USE_COMPUTED_SIZE));
-                    secondaryStage.initModality(Modality.APPLICATION_MODAL);
-                    secondaryStage.show();
-                }
-            }
-        });*/
         servicesNames.addAll(companyModel.getServices());
         servicesList.setItems(servicesNames);
 

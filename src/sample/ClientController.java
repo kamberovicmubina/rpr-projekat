@@ -174,9 +174,6 @@ public class ClientController implements Initializable {
         Optional<ButtonType> option = alert.showAndWait();
         if (option.get() == ButtonType.YES) {
             companyModel.removeClient();
-            for (Client c : companyModel.getClients()) {
-                System.out.println(c.toString());
-            }
             Alert newAlert = new Alert(Alert.AlertType.CONFIRMATION, "Client deleted!");
             newAlert.setTitle("SUCCESS!");
             newAlert.setHeaderText(null);

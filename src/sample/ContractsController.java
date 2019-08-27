@@ -4,6 +4,8 @@ import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
+import javafx.scene.control.Alert;
+import javafx.scene.control.ButtonType;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
 import javafx.scene.control.cell.PropertyValueFactory;
@@ -14,6 +16,7 @@ import javafx.stage.Stage;
 import java.io.IOException;
 import java.net.URL;
 import java.time.LocalDate;
+import java.util.Optional;
 import java.util.ResourceBundle;
 
 public class ContractsController implements Initializable {
@@ -55,7 +58,18 @@ public class ContractsController implements Initializable {
     }
 
     public void onDeleteContract () {
+        Alert alert = new Alert(Alert.AlertType.INFORMATION, "Are you sure you want to delete this contract?", ButtonType.YES, ButtonType.NO);
+        alert.setTitle("Warning!");
+        alert.setHeaderText(null);
+        Optional<ButtonType> option = alert.showAndWait();
+        if (option.get() == ButtonType.YES) {
+            companyModel.getClickedClient().getContractList().remove(contractTableView.getSelectionModel().getSelectedItem());
+            Alert newAlert = new Alert(Alert.AlertType.CONFIRMATION, "Contract deleted!");
+            newAlert.setTitle("SUCCESS!");
+            newAlert.setHeaderText(null);
+            newAlert.show();
 
+        }
     }
 
 }

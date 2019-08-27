@@ -140,7 +140,25 @@ public class Controller implements Initializable {
     }
 
     public void onDeleteService () {
-
+        String service = servicesList.getSelectionModel().getSelectedItem();
+        if (service != null) {
+            Alert alert = new Alert(Alert.AlertType.INFORMATION, "Are you sure you want to delete this service?", ButtonType.YES, ButtonType.NO);
+            alert.setTitle("Warning!");
+            alert.setHeaderText(null);
+            Optional<ButtonType> option = alert.showAndWait();
+            if (option.get() == ButtonType.YES) {
+                companyModel.getServices().remove(service);
+                Alert newAlert = new Alert(Alert.AlertType.CONFIRMATION, "Service deleted!");
+                newAlert.setTitle("SUCCESS!");
+                newAlert.setHeaderText(null);
+                newAlert.show();
+            }
+        } else {
+            Alert alert = new Alert(Alert.AlertType.INFORMATION, "Please select the service you want to delete!");
+            alert.setTitle("Error");
+            alert.setHeaderText(null);
+            alert.showAndWait();
+        }
     }
 
 }

@@ -1,13 +1,5 @@
 package sample;
 
-import javafx.beans.Observable;
-import javafx.beans.property.SimpleStringProperty;
-import javafx.beans.value.ChangeListener;
-import javafx.beans.value.ObservableValue;
-import javafx.collections.FXCollections;
-import javafx.collections.ObservableArray;
-import javafx.collections.ObservableList;
-import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
 import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
@@ -50,7 +42,11 @@ public class Controller implements Initializable {
             public void handle(MouseEvent mouseEvent) {
                 companyModel.setClickedClient(clientList.getSelectionModel().getSelectedItem());
                 if (mouseEvent.getClickCount() == 2) {
-                    onChange();
+                    try {
+                        onChange();
+                    } catch (ObjectNotSelectedException e) {
+                        e.printStackTrace();
+                    }
                 }
             }
         });
@@ -76,47 +72,56 @@ public class Controller implements Initializable {
         }
     }
 
-    public void onDelete () {
-        if (companyModel.getClickedClient() != null) {
-            Alert alert = new Alert(Alert.AlertType.INFORMATION, "Are you sure you want to delete this client?", ButtonType.YES, ButtonType.NO);
-            alert.setTitle("Warning!");
-            alert.setHeaderText(null);
-            Optional<ButtonType> option = alert.showAndWait();
-            if (option.get() == ButtonType.YES) {
-                companyModel.removeClient();
-                Alert newAlert = new Alert(Alert.AlertType.CONFIRMATION, "Client deleted!");
-                newAlert.setTitle("SUCCESS!");
-                newAlert.setHeaderText(null);
-                newAlert.show();
+    public void onDelete () throws ObjectNotSelectedException {
+        try {
+            if (companyModel.getClickedClient() != null) {
+                Alert alert = new Alert(Alert.AlertType.INFORMATION, "Are you sure you want to delete this client?", ButtonType.YES, ButtonType.NO);
+                alert.setTitle("Warning!");
+                alert.setHeaderText(null);
+                Optional<ButtonType> option = alert.showAndWait();
+                if (option.get() == ButtonType.YES) {
+                    companyModel.removeClient();
+                    Alert newAlert = new Alert(Alert.AlertType.CONFIRMATION, "Client deleted!");
+                    newAlert.setTitle("SUCCESS!");
+                    newAlert.setHeaderText(null);
+                    newAlert.show();
+                }
+            } else {
+                throw new ObjectNotSelectedException("Please select the client you want to delete!");
             }
-        } else {
-            Alert alert = new Alert(Alert.AlertType.INFORMATION, "Please select the client you want to delete!");
+        } catch (ObjectNotSelectedException o) {
+            Alert alert = new Alert(Alert.AlertType.INFORMATION, o.getMessage());
             alert.setTitle("Error");
             alert.setHeaderText(null);
             alert.showAndWait();
         }
     }
 
-    public void onChange () {
-        if (companyModel.getClickedClient() != null) {
-            FXMLLoader loader = new FXMLLoader(getClass().getResource("/fxml/client.fxml"));
-            loader.setController(new ClientController(companyModel));
-            Parent root = null;
-            try {
-                root = loader.load();
-            } catch (IOException e) {
-                e.printStackTrace();
+    public void onChange () throws ObjectNotSelectedException {
+        try {
+            if (companyModel.getClickedClient() != null) {
+                FXMLLoader loader = new FXMLLoader(getClass().getResource("/fxml/client.fxml"));
+                loader.setController(new ClientController(companyModel));
+                Parent root = null;
+                try {
+                    root = loader.load();
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+                if (root != null) {
+                    Stage secondaryStage = new Stage();
+                    secondaryStage.setTitle(companyModel.getClickedClient().getName());
+                    secondaryStage.setResizable(false);
+                    secondaryStage.setScene(new Scene(root, Region.USE_COMPUTED_SIZE, Region.USE_COMPUTED_SIZE));
+                    secondaryStage.initModality(Modality.APPLICATION_MODAL);
+                    secondaryStage.show();
+                }
+            } else {
+                throw new ObjectNotSelectedException("Please select the client you want to change!");
+
             }
-            if (root != null) {
-                Stage secondaryStage = new Stage();
-                secondaryStage.setTitle(companyModel.getClickedClient().getName());
-                secondaryStage.setResizable(false);
-                secondaryStage.setScene(new Scene(root, Region.USE_COMPUTED_SIZE, Region.USE_COMPUTED_SIZE));
-                secondaryStage.initModality(Modality.APPLICATION_MODAL);
-                secondaryStage.show();
-            }
-        } else {
-            Alert alert = new Alert(Alert.AlertType.INFORMATION, "Please select the client you want to change!");
+        } catch (ObjectNotSelectedException o) {
+            Alert alert = new Alert(Alert.AlertType.INFORMATION, o.getMessage());
             alert.setTitle("Error");
             alert.setHeaderText(null);
             alert.showAndWait();
@@ -142,22 +147,26 @@ public class Controller implements Initializable {
         }
     }
 
-    public void onDeleteService () {
-        String service = servicesList.getSelectionModel().getSelectedItem();
-        if (service != null) {
-            Alert alert = new Alert(Alert.AlertType.INFORMATION, "Are you sure you want to delete this service?", ButtonType.YES, ButtonType.NO);
-            alert.setTitle("Warning!");
-            alert.setHeaderText(null);
-            Optional<ButtonType> option = alert.showAndWait();
-            if (option.get() == ButtonType.YES) {
-                companyModel.getServices().remove(service);
-                Alert newAlert = new Alert(Alert.AlertType.CONFIRMATION, "Service deleted!");
-                newAlert.setTitle("SUCCESS!");
-                newAlert.setHeaderText(null);
-                newAlert.show();
+    public void onDeleteService () throws ObjectNotSelectedException{
+        try {
+            String service = servicesList.getSelectionModel().getSelectedItem();
+            if (service != null) {
+                Alert alert = new Alert(Alert.AlertType.INFORMATION, "Are you sure you want to delete this service?", ButtonType.YES, ButtonType.NO);
+                alert.setTitle("Warning!");
+                alert.setHeaderText(null);
+                Optional<ButtonType> option = alert.showAndWait();
+                if (option.get() == ButtonType.YES) {
+                    companyModel.getServices().remove(service);
+                    Alert newAlert = new Alert(Alert.AlertType.CONFIRMATION, "Service deleted!");
+                    newAlert.setTitle("SUCCESS!");
+                    newAlert.setHeaderText(null);
+                    newAlert.show();
+                }
+            } else {
+                throw new ObjectNotSelectedException("Please select the service you want to delete!");
             }
-        } else {
-            Alert alert = new Alert(Alert.AlertType.INFORMATION, "Please select the service you want to delete!");
+        } catch (ObjectNotSelectedException o) {
+            Alert alert = new Alert(Alert.AlertType.INFORMATION, o.getMessage());
             alert.setTitle("Error");
             alert.setHeaderText(null);
             alert.showAndWait();

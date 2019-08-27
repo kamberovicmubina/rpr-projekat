@@ -31,7 +31,8 @@ public class Controller implements Initializable {
     public MenuItem deleteClient;
     public MenuItem changeClient;
     public Button addClientButton;
-    private ObservableList<String> servicesNames = FXCollections.observableArrayList();
+    public Button addServiceBtn;
+    public Button deleteServiceBtn;
 
     private Company companyModel;
 
@@ -53,8 +54,7 @@ public class Controller implements Initializable {
                 }
             }
         });
-        servicesNames.addAll(companyModel.getServices());
-        servicesList.setItems(servicesNames);
+        servicesList.setItems(companyModel.getServices());
 
     }
 
@@ -121,5 +121,26 @@ public class Controller implements Initializable {
         }
     }
 
+    public void onAddService () {
+        FXMLLoader loader = new FXMLLoader(getClass().getResource("/fxml/addService.fxml"));
+        loader.setController(new AddServiceController(companyModel));
+        Parent root = null;
+        try {
+            root = loader.load();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        if (root != null) {
+            Stage secondaryStage = new Stage();
+            secondaryStage.setTitle("New service");
+            secondaryStage.setScene(new Scene(root, Region.USE_COMPUTED_SIZE, Region.USE_COMPUTED_SIZE));
+            secondaryStage.initModality(Modality.APPLICATION_MODAL);
+            secondaryStage.show();
+        }
+    }
+
+    public void onDeleteService () {
+
+    }
 
 }

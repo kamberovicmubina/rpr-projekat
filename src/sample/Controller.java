@@ -69,6 +69,7 @@ public class Controller implements Initializable {
         if (root != null) {
             Stage secondaryStage = new Stage();
             secondaryStage.setTitle("New Client");
+            secondaryStage.setResizable(false);
             secondaryStage.setScene(new Scene(root, Region.USE_COMPUTED_SIZE, Region.USE_COMPUTED_SIZE));
             secondaryStage.initModality(Modality.APPLICATION_MODAL);
             secondaryStage.show();
@@ -109,6 +110,7 @@ public class Controller implements Initializable {
             if (root != null) {
                 Stage secondaryStage = new Stage();
                 secondaryStage.setTitle(companyModel.getClickedClient().getName());
+                secondaryStage.setResizable(false);
                 secondaryStage.setScene(new Scene(root, Region.USE_COMPUTED_SIZE, Region.USE_COMPUTED_SIZE));
                 secondaryStage.initModality(Modality.APPLICATION_MODAL);
                 secondaryStage.show();
@@ -133,6 +135,7 @@ public class Controller implements Initializable {
         if (root != null) {
             Stage secondaryStage = new Stage();
             secondaryStage.setTitle("New service");
+            secondaryStage.setResizable(false);
             secondaryStage.setScene(new Scene(root, Region.USE_COMPUTED_SIZE, Region.USE_COMPUTED_SIZE));
             secondaryStage.initModality(Modality.APPLICATION_MODAL);
             secondaryStage.show();

@@ -195,6 +195,7 @@ public class ClientController implements Initializable {
         if (root != null) {
             Stage secondaryStage = new Stage();
             secondaryStage.setTitle("Client contracts");
+            secondaryStage.setResizable(false);
             secondaryStage.setScene(new Scene(root, Region.USE_COMPUTED_SIZE, Region.USE_COMPUTED_SIZE));
             secondaryStage.initModality(Modality.APPLICATION_MODAL);
             secondaryStage.show();

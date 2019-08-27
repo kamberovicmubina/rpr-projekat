@@ -8,7 +8,7 @@ public class Company {
     private String address;
     private ObservableList<Department> departments;
     private ObservableList<Employee> employees;
-    private ObservableList<Client> clients;
+    private static ObservableList<Client> clients;
     private Person owner;
     private ObservableList<String> services;
     private Client clickedClient;
@@ -88,7 +88,7 @@ public class Company {
         this.owner = owner;
     }
 
-    public void addClient(Client newClient) {
+    public static void addClient(Client newClient) {
         clients.add(newClient);
     }
 

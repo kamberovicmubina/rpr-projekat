@@ -2,9 +2,13 @@ package sample;
 
 import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
+import javafx.event.ActionEvent;
 import javafx.fxml.Initializable;
+import javafx.scene.control.Alert;
+import javafx.scene.control.Button;
 import javafx.scene.control.DatePicker;
 import javafx.scene.control.TextField;
+import javafx.stage.Stage;
 
 
 import java.net.URL;
@@ -17,6 +21,13 @@ public class NewClientController implements Initializable {
     public TextField phoneField;
     public TextField eMailField;
     public DatePicker dateField;
+    public Button saveButton;
+    public Button cancelButton;
+    private boolean nameValid = false;
+    private boolean addressValid = false;
+    private boolean phoneValid = false;
+    private boolean eMailValid = false;
+    private boolean dateValid = false;
 
     @Override
     public void initialize(URL url, ResourceBundle resourceBundle) {
@@ -24,11 +35,11 @@ public class NewClientController implements Initializable {
             if (FieldsValidation.validName(n)) {
                 nameField.getStyleClass().removeAll("fieldIncorrect");
                 nameField.getStyleClass().add("fieldCorrect");
-                // imeValidno = true;
+                nameValid = true;
             } else {
                 nameField.getStyleClass().removeAll("fieldCorrect");
                 nameField.getStyleClass().add("fieldIncorrect");
-                //imeValidno = false;
+                nameValid = false;
             }
         });
 
@@ -36,11 +47,11 @@ public class NewClientController implements Initializable {
             if (FieldsValidation.validAddress(n)) {
                 addressField.getStyleClass().removeAll("fieldIncorrect");
                 addressField.getStyleClass().add("fieldCorrect");
-                // imeValidno = true;
+                addressValid = true;
             } else {
                 addressField.getStyleClass().removeAll("fieldCorrect");
                 addressField.getStyleClass().add("fieldIncorrect");
-                //imeValidno = false;
+                addressValid = false;
             }
         });
 
@@ -48,11 +59,11 @@ public class NewClientController implements Initializable {
             if (FieldsValidation.validPhone(n)) {
                 phoneField.getStyleClass().removeAll("fieldIncorrect");
                 phoneField.getStyleClass().add("fieldCorrect");
-                // imeValidno = true;
+                phoneValid = true;
             } else {
                 phoneField.getStyleClass().removeAll("fieldCorrect");
                 phoneField.getStyleClass().add("fieldIncorrect");
-                //imeValidno = false;
+                phoneValid = false;
             }
         });
 
@@ -60,11 +71,11 @@ public class NewClientController implements Initializable {
             if (FieldsValidation.validEMail(n)) {
                 eMailField.getStyleClass().removeAll("fieldIncorrect");
                 eMailField.getStyleClass().add("fieldCorrect");
-                // imeValidno = true;
+                eMailValid = true;
             } else {
                 eMailField.getStyleClass().removeAll("fieldCorrect");
                 eMailField.getStyleClass().add("fieldIncorrect");
-                //imeValidno = false;
+                eMailValid = false;
             }
         });
 
@@ -72,13 +83,47 @@ public class NewClientController implements Initializable {
             if (FieldsValidation.validDate(n)) {
                 dateField.getStyleClass().removeAll("fieldIncorrect");
                 dateField.getStyleClass().add("fieldCorrect");
+                dateValid = true;
             } else {
                 dateField.getStyleClass().removeAll("fieldCorrect");
                 dateField.getStyleClass().add("fieldIncorrect");
-                //imeValidno = false;
+                dateValid = false;
             }
         });
 
 
+    }
+
+    public boolean dataValid () {
+        return nameValid && dateValid && addressValid && phoneValid && eMailValid;
+    }
+
+    public void saveClicked (ActionEvent actionEvent) {
+        if (!dataValid()) {
+            Alert alert = new Alert(Alert.AlertType.INFORMATION);
+            alert.setTitle("Error!");
+            alert.setHeaderText(null);
+            alert.setContentText("Client information is not valid. Try again!");
+            alert.showAndWait();
+        }
+        else {
+            String name = nameField.getText();
+            LocalDate date = dateField.getValue();
+            String address = addressField.getText();
+            String phone = phoneField.getText();
+            String eMail = eMailField.getText();
+            Client newClient = new Client(name, date, address, phone, eMail, null);
+            Company.addClient(newClient);
+            Alert alert = new Alert(Alert.AlertType.INFORMATION);
+            alert.setTitle("Success!");
+            alert.setHeaderText(null);
+            alert.setContentText("New client added!");
+            alert.showAndWait();
+        }
+    }
+
+    public void cancelClicked (ActionEvent actionEvent) {
+        Stage stage = (Stage) cancelButton.getScene().getWindow();
+        stage.close();
     }
 }

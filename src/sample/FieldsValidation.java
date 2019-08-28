@@ -40,12 +40,12 @@ public class FieldsValidation {
 
     public static boolean validDate (LocalDate n) {
         LocalDate now = LocalDate.now();
-        return n.isBefore(now) || n.isEqual(now);
+        return n != null && (n.isBefore(now) || n.isEqual(now));
     }
 
     public static boolean dateInFuture (LocalDate n) {
         LocalDate now = LocalDate.now();
-        return n.isAfter(now);
+        return n != null && n.isAfter(now);
     }
 
 

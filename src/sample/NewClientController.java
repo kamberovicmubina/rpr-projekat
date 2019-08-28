@@ -114,7 +114,9 @@ public class NewClientController implements Initializable {
             alert.setTitle(bundle.getString("success"));
             alert.setHeaderText(null);
             alert.setContentText(bundle.getString("clientAdded"));
-            alert.showAndWait();
+            alert.show();
+            Stage stage = (Stage) saveButton.getScene().getWindow();
+            stage.close();
         }
     }
 

@@ -10,6 +10,7 @@ import java.util.List;
 
 public class Client extends Person {
     ObservableList<Contract> contractList = FXCollections.observableArrayList();
+    double profit;
 
     public Client(String name, LocalDate dateOfBirth, String address, String phoneNumber, String eMail, ObservableList<Contract> contractList) {
         super(name, dateOfBirth, address, phoneNumber, eMail);
@@ -22,6 +23,18 @@ public class Client extends Person {
 
     public void setContractList(ObservableList<Contract> contractList) {
         this.contractList = contractList;
+    }
+
+    public double getProfit() {
+        return profit;
+    }
+
+    public void setProfit(double profit) {
+        this.profit = profit;
+    }
+
+    public void addToProfit(double newProfit) {
+        profit = profit + newProfit;
     }
 
     @Override

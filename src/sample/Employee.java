@@ -12,6 +12,7 @@ public class Employee extends Person {
         this.contractList = contractList;
     }
 
+
     public List<Contract> getContractList() {
         return contractList;
     }

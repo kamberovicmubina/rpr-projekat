@@ -17,6 +17,15 @@ public class Client extends Person {
         this.contractList = contractList;
     }
 
+    public Client(String name, LocalDate dateOfBirth, String address, String phoneNumber, String eMail, ObservableList<Contract> contractList, double profit) {
+        super(name, dateOfBirth, address, phoneNumber, eMail);
+        this.contractList = contractList;
+        this.profit = profit;
+    }
+
+    public Client() {
+    }
+
     public ObservableList<Contract> getContractList() {
         return contractList;
     }

@@ -18,6 +18,9 @@ public class Person {
         this.eMail = eMail;
     }
 
+    public Person() {
+    }
+
     public String getName() {
         return name;
     }

@@ -9,6 +9,16 @@ public class Contract {
     private LocalDate signDate;
     private LocalDate endDate;
 
+    public Contract(String title, Person person, LocalDate signDate, LocalDate endDate) {
+        titleOfContract = title;
+        this.person = person;
+        this.signDate = signDate;
+        this.endDate = endDate;
+    }
+
+    public Contract() {
+    }
+
     public String getTitleOfContract() {
         return titleOfContract;
     }
@@ -16,8 +26,6 @@ public class Contract {
     public void setTitleOfContract(String titleOfContract) {
         this.titleOfContract = titleOfContract;
     }
-
-
 
     public Person getPerson() {
         return person;
@@ -43,10 +51,5 @@ public class Contract {
         this.endDate = endDate;
     }
 
-    public Contract(String title, Person person, LocalDate signDate, LocalDate endDate) {
-        titleOfContract = title;
-        this.person = person;
-        this.signDate = signDate;
-        this.endDate = endDate;
-    }
+
 }

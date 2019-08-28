@@ -16,6 +16,18 @@ public class Company {
     private ObservableList<String> services;
     private ObjectProperty<Client> clickedClient = new SimpleObjectProperty<>();
 
+    public Company(String name, String address, ObservableList<Department> departments, ObservableList<Employee> employees, ObservableList<Client> clients, Person owner, ObservableList<String> services) {
+        this.name = name;
+        this.address = address;
+        this.departments = departments;
+        this.employees = employees;
+        this.clients = clients;
+        this.owner = owner;
+        this.services = services;
+    }
+
+    public Company () {}
+
     public ObjectProperty<Client> clickedClientProperty()  {
         return clickedClient;
     }
@@ -60,16 +72,6 @@ public class Company {
         this.clients = clients;
     }
 
-    public Company(String name, String address, ObservableList<Department> departments, ObservableList<Employee> employees, ObservableList<Client> clients, Person owner, ObservableList<String> services) {
-        this.name = name;
-        this.address = address;
-        this.departments = departments;
-        this.employees = employees;
-        this.clients = clients;
-        this.owner = owner;
-        this.services = services;
-    }
-
     public String getName() {
         return name;
     }
@@ -85,7 +87,6 @@ public class Company {
     public void setAddress(String address) {
         this.address = address;
     }
-
 
     public Person getOwner() {
         return owner;

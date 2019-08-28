@@ -12,6 +12,9 @@ import javafx.scene.Scene;
 import javafx.stage.Stage;
 
 import java.time.LocalDate;
+import java.util.Locale;
+import java.util.ResourceBundle;
+
 import static javafx.scene.layout.Region.USE_COMPUTED_SIZE;
 
 public class Main extends Application {
@@ -39,10 +42,13 @@ public class Main extends Application {
         services.addAll("General Contracting", "Pre-Construction", "Design-Build Services", "Construction Management");
         Company company = new Company("Building company", "Obala 2", departments, employees, clients, null, services);
 
-        FXMLLoader loader = new FXMLLoader(getClass().getResource("/fxml/sample.fxml"));
+        ResourceBundle bundle = ResourceBundle.getBundle("Translation");
+        Locale.setDefault(new Locale("bs", "BA"));
+        FXMLLoader loader = new FXMLLoader(getClass().getResource("/fxml/sample.fxml"), bundle);
         loader.setController(new Controller(company));
         Parent root = loader.load();
         primaryStage.setTitle("CRM");
+        primaryStage.setResizable(false);
         primaryStage.setScene(new Scene(root, USE_COMPUTED_SIZE, USE_COMPUTED_SIZE));
         primaryStage.show();
     }

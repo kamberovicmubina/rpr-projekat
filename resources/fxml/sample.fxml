@@ -12,12 +12,15 @@
 
 <BorderPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="400.0" prefWidth="600.0" xmlns="http://javafx.com/javafx/8.0.172-ea" xmlns:fx="http://javafx.com/fxml/1">
    <top>
-      <Label fx:id="titleLabel" prefHeight="69.0" prefWidth="256.0" text="CLIENT RELATIONSHIP MANAGEMENT&#10;BUILDING COMPANY" textAlignment="CENTER" BorderPane.alignment="CENTER" />
+      <Label fx:id="titleLabel" alignment="CENTER" prefHeight="38.0" prefWidth="533.0" text="%building" BorderPane.alignment="CENTER">
+         <graphic>
+            <Label text="%crm" />
+         </graphic></Label>
    </top>
    <center>
       <VBox prefHeight="273.0" prefWidth="400.0" BorderPane.alignment="CENTER">
          <children>
-            <Label alignment="CENTER" text="Clients" />
+            <Label alignment="CENTER" text="%clients" />
             <ListView fx:id="clientList" prefHeight="200.0" prefWidth="200.0">
                <contextMenu>
                   <ContextMenu>
@@ -28,19 +31,19 @@
                     </items>
                   </ContextMenu>
                </contextMenu></ListView>
-            <Button fx:id="addClientButton" mnemonicParsing="false" onAction="#onAdd" text="Add client" />
+            <Button fx:id="addClientButton" mnemonicParsing="false" onAction="#onAdd" text="%addClient" />
          </children>
       </VBox>
    </center>
    <left>
       <VBox prefHeight="298.0" prefWidth="132.0" BorderPane.alignment="CENTER">
          <children>
-            <Label alignment="CENTER" contentDisplay="CENTER" text="Our services" textAlignment="CENTER" />
+            <Label alignment="CENTER" contentDisplay="CENTER" text="%ourServices" textAlignment="CENTER" />
             <ListView fx:id="servicesList" prefHeight="220.0" prefWidth="137.0" />
             <HBox prefHeight="100.0" prefWidth="200.0">
                <children>
-                  <Button fx:id="addServiceBtn" mnemonicParsing="false" onAction="#onAddService" text="Add" />
-                  <Button fx:id="deleteServiceBtn" mnemonicParsing="false" onAction="#onDeleteService" text="Delete" />
+                  <Button fx:id="addServiceBtn" mnemonicParsing="false" onAction="#onAddService" text="%add" />
+                  <Button fx:id="deleteServiceBtn" mnemonicParsing="false" onAction="#onDeleteService" text="%delete" />
                </children>
             </HBox>
          </children>
@@ -49,18 +52,18 @@
    <right>
       <VBox prefHeight="298.0" prefWidth="156.0" BorderPane.alignment="CENTER">
          <children>
-            <Button mnemonicParsing="false" text="Profit per client" />
-            <Button mnemonicParsing="false" text="Client number statistic" />
-            <Button mnemonicParsing="false" prefWidth="100.0" text="Department statistic" />
+            <Button mnemonicParsing="false" text="%profitPerClient" />
+            <Button mnemonicParsing="false" text="%clientNumberStatistic" />
+            <Button mnemonicParsing="false" prefWidth="100.0" text="%departmentStatistic" />
          </children>
       </VBox>
    </right>
    <bottom>
       <HBox prefHeight="33.0" prefWidth="600.0" BorderPane.alignment="CENTER">
          <children>
-            <Label fx:id="companyName" text="Building company, " />
-            <Label fx:id="companyAddress" text="Obala 2, " />
-            <Label fx:id="companyOwner" text="Owner" />
+            <Label fx:id="companyName" text="%buildingSmall" />
+            <Label fx:id="companyAddress" text="%titova" />
+            <Label fx:id="companyOwner" text="%owner" />
          </children>
       </HBox>
    </bottom>

@@ -7,6 +7,7 @@
 <?import javafx.scene.control.ListView?>
 <?import javafx.scene.control.MenuButton?>
 <?import javafx.scene.control.MenuItem?>
+<?import javafx.scene.control.Tooltip?>
 <?import javafx.scene.layout.BorderPane?>
 <?import javafx.scene.layout.HBox?>
 <?import javafx.scene.layout.VBox?>
@@ -53,9 +54,18 @@
    <right>
       <VBox prefHeight="298.0" prefWidth="156.0" BorderPane.alignment="CENTER">
          <children>
-            <Button mnemonicParsing="false" text="%profitPerClient" />
-            <Button mnemonicParsing="false" text="%clientNumberStatistic" />
-            <Button mnemonicParsing="false" prefWidth="100.0" text="%departmentStatistic" />
+            <Button mnemonicParsing="false" text="%profitPerClient">
+               <tooltip>
+                  <Tooltip text="%profitPerClient" />
+               </tooltip></Button>
+            <Button mnemonicParsing="false" text="%clientNumberStatistic">
+               <tooltip>
+                  <Tooltip text="%clientNumberStatistic" />
+               </tooltip></Button>
+            <Button mnemonicParsing="false" prefWidth="100.0" text="%departmentStatistic">
+               <tooltip>
+                  <Tooltip text="%departmentStatistic" />
+               </tooltip></Button>
          </children>
       </VBox>
    </right>

@@ -42,7 +42,9 @@ public class Main extends Application {
         services.addAll("General Contracting", "Pre-Construction", "Design-Build Services", "Construction Management");
         Company company = new Company("Building company", "Obala 2", departments, employees, clients, null, services);
 
-        ResourceBundle bundle = ResourceBundle.getBundle("Translation");
+
+        ResourceBundle bundle = ResourceBundle.getBundle("Translation", new Locale("en", "EN"));
+
         FXMLLoader loader = new FXMLLoader(getClass().getResource("/fxml/sample.fxml"), bundle);
         loader.setController(new Controller(company));
         Parent root = loader.load();

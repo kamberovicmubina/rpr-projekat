@@ -21,9 +21,12 @@ public class NewClientController implements Initializable {
     private boolean phoneValid = false;
     private boolean eMailValid = false;
     private boolean dateValid = false;
+    private ResourceBundle bundle;
 
     @Override
     public void initialize(URL url, ResourceBundle resourceBundle) {
+        bundle = resourceBundle;
+
         nameField.textProperty().addListener((observableValue, o, n) -> {
             if (FieldsValidation.validName(n)) {
                 nameField.getStyleClass().removeAll("fieldIncorrect");
@@ -94,9 +97,9 @@ public class NewClientController implements Initializable {
     public void saveClicked (ActionEvent actionEvent) {
         if (!dataValid()) {
             Alert alert = new Alert(Alert.AlertType.INFORMATION);
-            alert.setTitle("Error!");
+            alert.setTitle(bundle.getString("error"));
             alert.setHeaderText(null);
-            alert.setContentText("Client information is not valid. Try again!");
+            alert.setContentText(bundle.getString("incorrectInfo"));
             alert.showAndWait();
         }
         else {
@@ -108,9 +111,9 @@ public class NewClientController implements Initializable {
             Client newClient = new Client(name, date, address, phone, eMail, null);
             Company.addClient(newClient);
             Alert alert = new Alert(Alert.AlertType.INFORMATION);
-            alert.setTitle("Success!");
+            alert.setTitle(bundle.getString("success"));
             alert.setHeaderText(null);
-            alert.setContentText("New client added!");
+            alert.setContentText(bundle.getString("clientAdded"));
             alert.showAndWait();
         }
     }

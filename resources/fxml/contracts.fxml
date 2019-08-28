@@ -11,15 +11,15 @@
    <children>
       <TableView fx:id="contractTableView" prefHeight="200.0" prefWidth="200.0">
         <columns>
-          <TableColumn fx:id="Title" prefWidth="232.0" text="Title" />
-          <TableColumn fx:id="DateFrom" prefWidth="185.0" text="Date from" />
-            <TableColumn fx:id="DateTo" prefWidth="182.0" text="Date to" />
+          <TableColumn fx:id="Title" prefWidth="232.0" text="%title" />
+          <TableColumn fx:id="DateFrom" prefWidth="185.0" text="%dateFrom" />
+            <TableColumn fx:id="DateTo" prefWidth="182.0" text="%dateTo" />
         </columns>
       </TableView>
       <HBox prefHeight="100.0" prefWidth="200.0">
          <children>
-            <Button fx:id="addContractBtn" mnemonicParsing="false" onAction="#onAddContract" text="Add contract" />
-            <Button fx:id="deleteContractBtn" mnemonicParsing="false" onAction="#onDeleteContract" text="Delete contract" />
+            <Button fx:id="addContractBtn" mnemonicParsing="false" onAction="#onAddContract" text="%addContract" />
+            <Button fx:id="deleteContractBtn" mnemonicParsing="false" onAction="#onDeleteContract" text="%deleteContract" />
          </children>
       </HBox>
    </children>

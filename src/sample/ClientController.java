@@ -45,6 +45,7 @@ public class ClientController implements Initializable {
     private boolean phoneValid = true;
     private boolean eMailValid = true;
     private boolean dateValid = true;
+    private ResourceBundle bundle;
 
     public ClientController (Company cm) {
         companyModel = cm;
@@ -58,6 +59,8 @@ public class ClientController implements Initializable {
 
     @Override
     public void initialize(URL url, ResourceBundle resourceBundle) {
+        bundle = resourceBundle;
+
         nameField.textProperty().bindBidirectional(nameProperty);
         addressField.textProperty().bindBidirectional(addressProperty);
         phoneField.textProperty().bindBidirectional(phoneProperty);
@@ -140,9 +143,9 @@ public class ClientController implements Initializable {
     public void saveClicked () {
         if (!dataValid()) {
             Alert alert = new Alert(Alert.AlertType.INFORMATION);
-            alert.setTitle("Error!");
+            alert.setTitle(bundle.getString("error"));
             alert.setHeaderText(null);
-            alert.setContentText("New client information is not valid. Try again!");
+            alert.setContentText(bundle.getString("incorrectInfo"));
             alert.showAndWait();
         }
         else {
@@ -154,9 +157,9 @@ public class ClientController implements Initializable {
             Client newClient = new Client(name, date, address, phone, eMail, null);
             companyModel.changeClient(companyModel.getClickedClient(), newClient);
             Alert alert = new Alert(Alert.AlertType.INFORMATION);
-            alert.setTitle("Success!");
+            alert.setTitle(bundle.getString("success"));
             alert.setHeaderText(null);
-            alert.setContentText("Client changed!");
+            alert.setContentText(bundle.getString("clientChanged"));
             alert.showAndWait();
             cancelClicked();
         }
@@ -168,14 +171,14 @@ public class ClientController implements Initializable {
     }
 
     public void deleteClicked () {
-        Alert alert = new Alert(Alert.AlertType.INFORMATION, "Are you sure you want to delete this client?", ButtonType.YES, ButtonType.NO);
-        alert.setTitle("Warning!");
+        Alert alert = new Alert(Alert.AlertType.INFORMATION, bundle.getString("alertClientDelete"), ButtonType.YES, ButtonType.NO);
+        alert.setTitle(bundle.getString("warning"));
         alert.setHeaderText(null);
         Optional<ButtonType> option = alert.showAndWait();
         if (option.get() == ButtonType.YES) {
             companyModel.removeClient();
-            Alert newAlert = new Alert(Alert.AlertType.CONFIRMATION, "Client deleted!");
-            newAlert.setTitle("SUCCESS!");
+            Alert newAlert = new Alert(Alert.AlertType.CONFIRMATION, bundle.getString("clientDeleted"));
+            newAlert.setTitle(bundle.getString("success"));
             newAlert.setHeaderText(null);
             newAlert.show();
             cancelClicked();
@@ -184,7 +187,7 @@ public class ClientController implements Initializable {
     }
 
     public void contractsClicked () {
-        FXMLLoader loader = new FXMLLoader(getClass().getResource("/fxml/contracts.fxml"));
+        FXMLLoader loader = new FXMLLoader(getClass().getResource("/fxml/contracts.fxml"), bundle);
         loader.setController(new ContractsController(companyModel));
         Parent root = null;
         try {
@@ -194,7 +197,7 @@ public class ClientController implements Initializable {
         }
         if (root != null) {
             Stage secondaryStage = new Stage();
-            secondaryStage.setTitle("Client contracts");
+            secondaryStage.setTitle(bundle.getString("clientContracts"));
             secondaryStage.setResizable(false);
             secondaryStage.setScene(new Scene(root, Region.USE_COMPUTED_SIZE, Region.USE_COMPUTED_SIZE));
             secondaryStage.initModality(Modality.APPLICATION_MODAL);

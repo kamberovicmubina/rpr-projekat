@@ -13,6 +13,7 @@ public class AddServiceController implements Initializable {
     public TextField serviceField;
     public Button addBtn;
     private Company companyModel;
+    private ResourceBundle bundle;
 
     public AddServiceController (Company cm) {
         companyModel = cm;
@@ -20,8 +21,8 @@ public class AddServiceController implements Initializable {
 
     public void onAdd () {
         companyModel.getServices().add(serviceField.getText());
-        Alert newAlert = new Alert(Alert.AlertType.CONFIRMATION, "New service added!");
-        newAlert.setTitle("SUCCESS!");
+        Alert newAlert = new Alert(Alert.AlertType.CONFIRMATION, bundle.getString("serviceAdded"));
+        newAlert.setTitle(bundle.getString("success"));
         newAlert.setHeaderText(null);
         newAlert.show();
         Stage stage = (Stage) addBtn.getScene().getWindow();
@@ -30,6 +31,6 @@ public class AddServiceController implements Initializable {
 
     @Override
     public void initialize(URL url, ResourceBundle resourceBundle) {
-
+        bundle = resourceBundle;
     }
 }

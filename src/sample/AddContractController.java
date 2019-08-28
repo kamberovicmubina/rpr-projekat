@@ -18,6 +18,7 @@ public class AddContractController implements Initializable {
     public Button saveBtn;
     public Button cancelBtn;
     private Company companyModel;
+    private ResourceBundle bundle;
 
     public AddContractController (Company cm) {
         companyModel = cm;
@@ -25,23 +26,23 @@ public class AddContractController implements Initializable {
 
     @Override
     public void initialize(URL url, ResourceBundle resourceBundle) {
-
+        bundle = resourceBundle;
     }
 
     public void onSave () {
         if (FieldsValidation.validDate(fromPicker.getValue()) && FieldsValidation.dateInFuture(toPicker.getValue())) {
             Contract newContract = new Contract(titleField.getText(), companyModel.getClickedClient(), fromPicker.getValue(), toPicker.getValue());
             companyModel.getClickedClient().getContractList().add(newContract);
-            Alert newAlert = new Alert(Alert.AlertType.CONFIRMATION, "Contract added!");
-            newAlert.setTitle("SUCCESS!");
+            Alert newAlert = new Alert(Alert.AlertType.CONFIRMATION, bundle.getString("contractAdded"));
+            newAlert.setTitle(bundle.getString("success"));
             newAlert.setHeaderText(null);
             newAlert.show();
             onCancel();
         } else {
             Alert alert = new Alert(Alert.AlertType.INFORMATION);
-            alert.setTitle("Error!");
+            alert.setTitle(bundle.getString("error"));
             alert.setHeaderText(null);
-            alert.setContentText("Incorrect information. Try again!");
+            alert.setContentText(bundle.getString("incorrectInfo"));
             alert.showAndWait();
         }
     }

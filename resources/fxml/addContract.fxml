@@ -22,16 +22,16 @@
       <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
   </rowConstraints>
    <children>
-      <Label text="Title of contract" />
-      <Label text="Date from" GridPane.rowIndex="1" />
-      <Label text="Date to" GridPane.rowIndex="2" />
+      <Label text="%titleOfContract" />
+      <Label text="%dateFrom" GridPane.rowIndex="1" />
+      <Label text="%dateTo" GridPane.rowIndex="2" />
       <TextField fx:id="titleField" GridPane.columnIndex="1" />
       <DatePicker fx:id="fromPicker" GridPane.columnIndex="1" GridPane.rowIndex="1" />
       <DatePicker fx:id="toPicker" GridPane.columnIndex="1" GridPane.rowIndex="2" />
       <HBox prefHeight="100.0" prefWidth="200.0" GridPane.columnIndex="1" GridPane.rowIndex="3">
          <children>
-            <Button fx:id="saveBtn" mnemonicParsing="false" onAction="#onSave" text="SAVE" />
-            <Button fx:id="cancelBtn" mnemonicParsing="false" onAction="#onCancel" text="CANCEL" />
+            <Button fx:id="saveBtn" mnemonicParsing="false" onAction="#onSave" text="%save" />
+            <Button fx:id="cancelBtn" mnemonicParsing="false" onAction="#onCancel" text="%cancel" />
          </children>
       </HBox>
    </children>

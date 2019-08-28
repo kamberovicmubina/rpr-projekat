@@ -25,6 +25,7 @@ public class ContractsController implements Initializable {
     public TableColumn<Contract, LocalDate> DateFrom;
     public TableColumn<Contract, LocalDate> DateTo;
     private Company companyModel;
+    private ResourceBundle bundle;
 
     public ContractsController (Company cm) {
         companyModel = cm;
@@ -36,11 +37,12 @@ public class ContractsController implements Initializable {
         DateFrom.setCellValueFactory(new PropertyValueFactory<>("signDate"));
         DateTo.setCellValueFactory(new PropertyValueFactory<>("endDate"));
         contractTableView.setItems(companyModel.getClickedClient().getContractList());
+        bundle = resourceBundle;
 
     }
 
     public void onAddContract () {
-        FXMLLoader loader = new FXMLLoader(getClass().getResource("/fxml/addContract.fxml"));
+        FXMLLoader loader = new FXMLLoader(getClass().getResource("/fxml/addContract.fxml"), bundle);
         loader.setController(new AddContractController(companyModel));
         Parent root = null;
         try {
@@ -50,7 +52,7 @@ public class ContractsController implements Initializable {
         }
         if (root != null) {
             Stage secondaryStage = new Stage();
-            secondaryStage.setTitle("Add new client contract");
+            secondaryStage.setTitle(bundle.getString("addNewContract"));
             secondaryStage.setResizable(false);
             secondaryStage.setScene(new Scene(root, Region.USE_COMPUTED_SIZE, Region.USE_COMPUTED_SIZE));
             secondaryStage.initModality(Modality.APPLICATION_MODAL);
@@ -59,14 +61,14 @@ public class ContractsController implements Initializable {
     }
 
     public void onDeleteContract () {
-        Alert alert = new Alert(Alert.AlertType.INFORMATION, "Are you sure you want to delete this contract?", ButtonType.YES, ButtonType.NO);
-        alert.setTitle("Warning!");
+        Alert alert = new Alert(Alert.AlertType.INFORMATION, bundle.getString("alertContractDelete"), ButtonType.YES, ButtonType.NO);
+        alert.setTitle(bundle.getString("warning"));
         alert.setHeaderText(null);
         Optional<ButtonType> option = alert.showAndWait();
         if (option.get() == ButtonType.YES) {
             companyModel.getClickedClient().getContractList().remove(contractTableView.getSelectionModel().getSelectedItem());
-            Alert newAlert = new Alert(Alert.AlertType.CONFIRMATION, "Contract deleted!");
-            newAlert.setTitle("SUCCESS!");
+            Alert newAlert = new Alert(Alert.AlertType.CONFIRMATION, bundle.getString("contractDeleted"));
+            newAlert.setTitle(bundle.getString("success"));
             newAlert.setHeaderText(null);
             newAlert.show();
 

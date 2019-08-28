@@ -1,5 +1,6 @@
 package sample;
 
+import javafx.event.EventHandler;
 import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
 import javafx.scene.Parent;
@@ -9,6 +10,7 @@ import javafx.scene.control.ButtonType;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
 import javafx.scene.control.cell.PropertyValueFactory;
+import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.Region;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
@@ -26,6 +28,7 @@ public class ContractsController implements Initializable {
     public TableColumn<Contract, LocalDate> DateTo;
     private Company companyModel;
     private ResourceBundle bundle;
+    private boolean contractSelected = false;
 
     public ContractsController (Company cm) {
         companyModel = cm;
@@ -38,6 +41,20 @@ public class ContractsController implements Initializable {
         DateTo.setCellValueFactory(new PropertyValueFactory<>("endDate"));
         contractTableView.setItems(companyModel.getClickedClient().getContractList());
         bundle = resourceBundle;
+
+        contractTableView.setOnMouseClicked(new EventHandler<MouseEvent>() {
+            @Override
+            public void handle(MouseEvent mouseEvent) {
+                contractSelected = true;
+            }
+        });
+
+        contractTableView.setOnMouseReleased(new EventHandler<MouseEvent>() {
+            @Override
+            public void handle(MouseEvent mouseEvent) {
+                contractSelected = false;
+            }
+        });
 
     }
 
@@ -61,17 +78,24 @@ public class ContractsController implements Initializable {
     }
 
     public void onDeleteContract () {
-        Alert alert = new Alert(Alert.AlertType.INFORMATION, bundle.getString("alertContractDelete"), ButtonType.YES, ButtonType.NO);
-        alert.setTitle(bundle.getString("warning"));
-        alert.setHeaderText(null);
-        Optional<ButtonType> option = alert.showAndWait();
-        if (option.get() == ButtonType.YES) {
-            companyModel.getClickedClient().getContractList().remove(contractTableView.getSelectionModel().getSelectedItem());
-            Alert newAlert = new Alert(Alert.AlertType.CONFIRMATION, bundle.getString("contractDeleted"));
-            newAlert.setTitle(bundle.getString("success"));
-            newAlert.setHeaderText(null);
-            newAlert.show();
+        if (contractSelected) {
+            Alert alert = new Alert(Alert.AlertType.INFORMATION, bundle.getString("alertContractDelete"), ButtonType.YES, ButtonType.NO);
+            alert.setTitle(bundle.getString("warning"));
+            alert.setHeaderText(null);
+            Optional<ButtonType> option = alert.showAndWait();
+            if (option.get() == ButtonType.YES) {
+                companyModel.getClickedClient().getContractList().remove(contractTableView.getSelectionModel().getSelectedItem());
+                Alert newAlert = new Alert(Alert.AlertType.CONFIRMATION, bundle.getString("contractDeleted"));
+                newAlert.setTitle(bundle.getString("success"));
+                newAlert.setHeaderText(null);
+                newAlert.show();
 
+            }
+        } else {
+            Alert alert = new Alert(Alert.AlertType.INFORMATION, bundle.getString("contractNotSelected"));
+            alert.setTitle(bundle.getString("error"));
+            alert.setHeaderText(null);
+            alert.showAndWait();
         }
     }
 

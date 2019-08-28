@@ -5,12 +5,13 @@
 <?import javafx.scene.control.ContextMenu?>
 <?import javafx.scene.control.Label?>
 <?import javafx.scene.control.ListView?>
+<?import javafx.scene.control.MenuButton?>
 <?import javafx.scene.control.MenuItem?>
 <?import javafx.scene.layout.BorderPane?>
 <?import javafx.scene.layout.HBox?>
 <?import javafx.scene.layout.VBox?>
 
-<BorderPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="400.0" prefWidth="600.0" xmlns="http://javafx.com/javafx/8.0.172-ea" xmlns:fx="http://javafx.com/fxml/1">
+<BorderPane fx:id="borderPane" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="400.0" prefWidth="600.0" xmlns="http://javafx.com/javafx/8.0.172-ea" xmlns:fx="http://javafx.com/fxml/1">
    <top>
       <Label fx:id="titleLabel" alignment="CENTER" prefHeight="38.0" prefWidth="533.0" text="%building" BorderPane.alignment="CENTER">
          <graphic>
@@ -64,6 +65,12 @@
             <Label fx:id="companyName" text="%buildingSmall" />
             <Label fx:id="companyAddress" text="%titova" />
             <Label fx:id="companyOwner" text="%owner" />
+            <MenuButton mnemonicParsing="false" text="%izborJezika" textAlignment="CENTER">
+              <items>
+                <MenuItem fx:id="bosnianOption" mnemonicParsing="false" onAction="#onBosnian" text="%bosnian" />
+                <MenuItem fx:id="englishOption" mnemonicParsing="false" onAction="#onEnglish" text="%english" />
+              </items>
+            </MenuButton>
          </children>
       </HBox>
    </bottom>

@@ -43,7 +43,6 @@ public class Main extends Application {
         Company company = new Company("Building company", "Obala 2", departments, employees, clients, null, services);
 
         ResourceBundle bundle = ResourceBundle.getBundle("Translation");
-        Locale.setDefault(new Locale("bs", "BA"));
         FXMLLoader loader = new FXMLLoader(getClass().getResource("/fxml/sample.fxml"), bundle);
         loader.setController(new Controller(company));
         Parent root = loader.load();

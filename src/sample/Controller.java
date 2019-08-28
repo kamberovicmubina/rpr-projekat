@@ -7,12 +7,14 @@ import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.*;
 import javafx.scene.input.MouseEvent;
+import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.Region;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
 
 import java.io.IOException;
 import java.net.URL;
+import java.util.Locale;
 import java.util.Optional;
 import java.util.ResourceBundle;
 
@@ -25,7 +27,10 @@ public class Controller implements Initializable {
     public Button addClientButton;
     public Button addServiceBtn;
     public Button deleteServiceBtn;
-
+    public MenuItem bosnianOption;
+    public MenuItem englishOption;
+    public BorderPane borderPane;
+    private ResourceBundle bundle;
     private Company companyModel;
 
 
@@ -171,6 +176,28 @@ public class Controller implements Initializable {
             alert.setHeaderText(null);
             alert.showAndWait();
         }
+    }
+
+    public void reloadScene () {
+        try{
+            bundle = ResourceBundle.getBundle("Translation");
+            Scene scene = borderPane.getScene();
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("/fxml/sample.fxml"), bundle);
+            loader.setController(this);
+            scene.setRoot(loader.load());
+        } catch (IOException e) {
+
+        }
+    }
+
+    public void onBosnian () {
+        Locale.setDefault(new Locale("bs", "BA"));
+        reloadScene();
+    }
+
+    public void onEnglish () {
+        Locale.setDefault(new Locale("en", "EN"));
+        reloadScene();
     }
 
 }

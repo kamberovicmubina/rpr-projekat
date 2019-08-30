@@ -14,7 +14,7 @@ import java.util.Scanner;
 public class DatabaseDAO {
     private static DatabaseDAO instance;
     private Connection connection;
-    private PreparedStatement getCompanyQuery, getClientsQuery, getClientContractsQuery, getOneClientQuery, getOnePersonQuery;
+    private PreparedStatement getCompanyQuery, getClientsQuery, getClientContractsQuery, getOneClientQuery, getOnePersonQuery, insertCompanyQuery;
     private ObservableList<Client> clients = FXCollections.observableArrayList();
 
     public static DatabaseDAO getInstance() {
@@ -247,6 +247,67 @@ public class DatabaseDAO {
             e.printStackTrace();
         }
         return person;
+    }
+
+    public void executeInsertCompany (Company company) {
+        try {
+            insertCompanyQuery = connection.prepareStatement("INSERT INTO company VALUES(?,?,?,?,?,?,?,?)");
+            PreparedStatement helpStatement = connection.prepareStatement("SELECT id FROM company ORDER BY id DESC");
+            ResultSet result = helpStatement.executeQuery();
+            int idCompany = 0;
+            while (result.next()) {
+                result.getInt(2);
+                idCompany++;
+            }
+            idCompany++;
+            insertCompanyQuery.setString(1, company.getName());
+            insertCompanyQuery.setInt(2, idCompany);
+            insertCompanyQuery.setString(3, company.getAddress());
+            insertCompanyQuery.setString(4, getStringFromDepartments(company.getDepartments()));
+            insertCompanyQuery.setString(5, getStringFromEmployees(company.getEmployees()));
+            insertCompanyQuery.setString(6, getStringFromClients(company.getClients()));
+            insertCompanyQuery.setString(7, getStringFromServices(company.getServices()));
+            insertCompanyQuery.setInt(8, company.getOwner().getId());
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+
+    }
+
+    private String getStringFromServices(ObservableList<String> services) {
+        String serviceList = "";
+        for (int i = 0; i < services.size(); i++) {
+            serviceList += services.get(i);
+            if (i != services.size()-1) serviceList += ", ";
+        }
+        return serviceList;
+    }
+
+    private String getStringFromClients(ObservableList<Client> clients) {
+        String clientList = "";
+        for (int i = 0; i < clients.size(); i++) {
+            clientList += clients.get(i).getId();
+            if (i != clients.size()-1) clientList += " ";
+        }
+        return clientList;
+    }
+
+    private String getStringFromEmployees(ObservableList<Employee> employees) {
+        String emps = "";
+        for (int i = 0; i < employees.size(); i++) {
+            emps += employees.get(i).getId();
+            if (i != employees.size()-1) emps += " ";
+        }
+        return emps;
+    }
+
+    private String getStringFromDepartments(ObservableList<Department> departments) {
+        String deps = "";
+        for (int i = 0; i < departments.size(); i++) {
+            deps += departments.get(i).getNameOfDepartment();
+            if (i != departments.size()-1) deps += ", ";
+        }
+        return deps;
     }
 
    /* public void setAddClientQuery () {

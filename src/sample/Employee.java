@@ -7,6 +7,7 @@ import java.util.List;
 public class Employee extends Person {
     List<Contract> contractList;
 
+
     public Employee(String name, LocalDate dateOfBirth, String address, String phoneNumber, String eMail, List<Contract> contractList) {
         super(name, dateOfBirth, address, phoneNumber, eMail);
         this.contractList = contractList;

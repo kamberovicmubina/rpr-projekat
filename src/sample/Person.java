@@ -9,6 +9,15 @@ public class Person {
     private String address;
     private String phoneNumber;
     private String eMail;
+    int id;
+
+    public int getId() {
+        return id;
+    }
+
+    public void setId(int id) {
+        this.id = id;
+    }
 
     public Person(String name, LocalDate dateOfBirth, String address, String phoneNumber, String eMail) {
         this.name = name;

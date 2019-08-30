@@ -14,7 +14,7 @@ import java.util.Scanner;
 public class DatabaseDAO {
     private static DatabaseDAO instance;
     private Connection connection;
-    private PreparedStatement getCompanyQuery, getClientsQuery, getClientContractsQuery, getOneClientQuery;
+    private PreparedStatement getCompanyQuery, getClientsQuery, getClientContractsQuery, getOneClientQuery, getOnePersonQuery;
     private ObservableList<Client> clients = FXCollections.observableArrayList();
 
     public static DatabaseDAO getInstance() {
@@ -66,6 +66,76 @@ public class DatabaseDAO {
 
     }
 
+    public Company executeGetCompanyQuery (int idCompany) {
+        Company company = null;
+        try {
+            getCompanyQuery = connection.prepareStatement("SELECT * FROM company WHERE id = ?");
+            getCompanyQuery.setInt(1, idCompany);
+            ResultSet rs = getCompanyQuery.executeQuery();
+            // only one row will be returned
+            String name = rs.getString(1);
+            String address = rs.getString(2);
+            String departments = rs.getString(3);
+            ObservableList<Department> departmentList = getDepartmentsFromString (departments);
+            String employees = rs.getString(4);
+            ObservableList<Employee> employeeList = getEmployeesFromString (employees);
+            String clients = rs.getString(5);
+            ObservableList<Client> clientList = getClientsFromString (clients);
+            String services = rs.getString(6);
+            ObservableList<String> serviceList = getServicesFromString (services);
+            int ownerId = rs.getInt(7);
+            Person owner = executeGetOnePerson(ownerId);
+            company = new Company(name, address, departmentList, employeeList, clientList, owner, serviceList);
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+
+        return company;
+    }
+
+    private ObservableList<String> getServicesFromString(String services) {
+        if (services.length() == 0) return null;
+        ObservableList<String> serviceList = FXCollections.observableArrayList();
+        String[] names = services.split(", ");
+        for (String s : names) {
+            serviceList.add(s);
+        }
+        return serviceList;
+    }
+
+    private ObservableList<Client> getClientsFromString(String clients) {
+        if (clients.length() == 0) return null;
+        ObservableList<Client> clientObservableList = FXCollections.observableArrayList();
+        String[] ids = clients.split(" ");
+        for (String s : ids) {
+            int id = Integer.parseInt(s);
+            clientObservableList.add(executeGetOneClient(id));
+        }
+        return  clientObservableList;
+    }
+
+    private ObservableList<Employee> getEmployeesFromString(String employees) {
+        if (employees.length() == 0) return null;
+        ObservableList<Employee> emp = FXCollections.observableArrayList();
+        // in string employees we have ids of employees
+        String[] ids = employees.split(" ");
+        for (String s : ids) {
+            int id = Integer.parseInt(s);
+            emp.add((Employee) executeGetOnePerson(id));
+        }
+        return emp;
+    }
+
+    private ObservableList<Department> getDepartmentsFromString(String departments) {
+        if (departments.length() == 0) return null;
+        ObservableList<Department> deps = FXCollections.observableArrayList();
+        String[] names = departments.split(", ");
+        for (String s : names) {
+            deps.add(new Department(s));
+        }
+        return deps;
+    }
+
     public ObservableList<Client> executeGetClientsQuery () {
         ObservableList<Client> clients = FXCollections.observableArrayList();
         try {
@@ -91,6 +161,7 @@ public class DatabaseDAO {
     }
 
     private LocalDate getLocalDateFromString(String dateOfBirth) {
+        if (dateOfBirth.length() == 0) return null;
         //string has to be in following format in order for this function to work: "YYYY MM DD"
         if (dateOfBirth.matches("^\\d\\d\\d\\d \\d\\d \\d\\d$") ) {
             // check if month is between 01 and 12
@@ -156,6 +227,26 @@ public class DatabaseDAO {
             e.printStackTrace();
         }
         return client;
+    }
+
+    public Person executeGetOnePerson (int idPerson) {
+        Person person = null;
+        try {
+            getOnePersonQuery = connection.prepareStatement("SELECT * FROM person WHERE id=?");
+            getOnePersonQuery.setInt(1, idPerson);
+            ResultSet rs = getOnePersonQuery.executeQuery();
+            // one row will be returned
+            String name = rs.getString(2);
+            String dateOfBirth = rs.getString(3);
+            LocalDate dateLocal = getLocalDateFromString (dateOfBirth);
+            String address = rs.getString(4);
+            String phone = rs.getString(5);
+            String eMail = rs.getString(6);
+            person = new Person(name, dateLocal, address, phone, eMail);
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return person;
     }
 
    /* public void setAddClientQuery () {

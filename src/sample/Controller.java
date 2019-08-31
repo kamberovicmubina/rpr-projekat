@@ -37,7 +37,7 @@ public class Controller implements Initializable {
   //  private Company companyModel;
     private DatabaseDAO dao;
     private ObservableList<String> servicesObservableList = FXCollections.observableArrayList();
-
+    private ObservableList<Client> clientsObservableList = FXCollections.observableArrayList();
 
     public Controller (DatabaseDAO databaseDAO) {
         dao = databaseDAO;
@@ -46,7 +46,8 @@ public class Controller implements Initializable {
     @Override
     public void initialize(URL url, ResourceBundle resourceBundle) {
         bundle = resourceBundle;
-        clientList.setItems(dao.executeGetClientsQuery());
+        clientsObservableList.addAll(dao.executeGetClientsQuery());
+        clientList.setItems(clientsObservableList);
 
         clientList.setOnMouseClicked(new EventHandler<MouseEvent>() {
             @Override
@@ -61,7 +62,6 @@ public class Controller implements Initializable {
                 }
             }
         });
-    //    servicesList.setItems(dao.executeGetCompanyQuery(1).getServices());
         servicesObservableList.addAll(dao.executeGetServices());
         servicesList.setItems(servicesObservableList);
 
@@ -69,6 +69,7 @@ public class Controller implements Initializable {
 
     public void onAdd() {
         FXMLLoader loader = new FXMLLoader(getClass().getResource("/fxml/newClient.fxml"), bundle);
+        loader.setController(new NewClientController(dao));
         Parent root = null;
         try {
             root = loader.load();
@@ -82,6 +83,11 @@ public class Controller implements Initializable {
             secondaryStage.setScene(new Scene(root, Region.USE_COMPUTED_SIZE, Region.USE_COMPUTED_SIZE));
             secondaryStage.initModality(Modality.APPLICATION_MODAL);
             secondaryStage.show();
+            secondaryStage.setOnCloseRequest(windowEvent -> {
+                clientsObservableList.clear();
+                clientsObservableList.addAll(dao.executeGetClientsQuery());
+                secondaryStage.close();
+            });
         }
     }
 

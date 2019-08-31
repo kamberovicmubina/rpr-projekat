@@ -22,6 +22,11 @@ public class NewClientController implements Initializable {
     private boolean eMailValid = false;
     private boolean dateValid = false;
     private ResourceBundle bundle;
+    private DatabaseDAO dao;
+
+    public NewClientController (DatabaseDAO databaseDAO) {
+        dao = databaseDAO;
+    }
 
     @Override
     public void initialize(URL url, ResourceBundle resourceBundle) {
@@ -109,15 +114,15 @@ public class NewClientController implements Initializable {
             String phone = phoneField.getText();
             String eMail = eMailField.getText();
             Client newClient = new Client(name, date, address, phone, eMail, null);
-            Company.addClient(newClient);
-
+            //Company.addClient(newClient);
+            dao.executeInsertClient(newClient);
             Alert alert = new Alert(Alert.AlertType.INFORMATION);
             alert.setTitle(bundle.getString("success"));
             alert.setHeaderText(null);
             alert.setContentText(bundle.getString("clientAdded"));
             alert.show();
-            Stage stage = (Stage) saveButton.getScene().getWindow();
-            stage.close();
+           /* Stage stage = (Stage) saveButton.getScene().getWindow();
+            stage.close();*/
         }
     }
 

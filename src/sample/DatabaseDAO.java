@@ -216,15 +216,17 @@ public class DatabaseDAO {
             getOneClientQuery = connection.prepareStatement("SELECT * FROM client WHERE id=?");
             getOneClientQuery.setInt(1,idClient);
             ResultSet rs = getOneClientQuery.executeQuery();
-            // one row will be returned
-            String name = rs.getString(1);
-            String dateOfBirth = rs.getString(2);
-            LocalDate dateLocal = getLocalDateFromString (dateOfBirth);
-            String address = rs.getString(3);
-            String phone = rs.getString(4);
-            String eMail = rs.getString(5);
-            double profit = rs.getDouble(7);
-            client = new Client(name, dateLocal, address, phone, eMail, null, profit);
+            while (rs.next()) {
+                String name = rs.getString(1);
+                String dateOfBirth = rs.getString(2);
+                LocalDate dateLocal = getLocalDateFromString(dateOfBirth);
+                String address = rs.getString(3);
+                String phone = rs.getString(4);
+                String eMail = rs.getString(5);
+                double profit = rs.getDouble(7);
+                client = new Client(name, dateLocal, address, phone, eMail, null, profit);
+                return client;
+            }
         } catch (SQLException e) {
             e.printStackTrace();
         }
@@ -263,7 +265,7 @@ public class DatabaseDAO {
             ResultSet result = helpStatement.executeQuery();
             int idCompany = 0;
             while (result.next()) {
-                result.getInt(2);
+                result.getInt(1);
                 idCompany++;
             }
             idCompany++;
@@ -325,7 +327,7 @@ public class DatabaseDAO {
             ResultSet result = helpStatement.executeQuery();
             int idClient = 0;
             while (result.next()) {
-                result.getInt(8);
+                result.getInt(1);
                 idClient++;
             }
             idClient++;
@@ -366,6 +368,7 @@ public class DatabaseDAO {
     }
 
     private String getStringFromContracts(ObservableList<Contract> contractList) {
+        if (contractList == null || contractList.size() == 0) return "";
         String contracts = "";
         for (int i = 0; i < contractList.size(); i++) {
             contracts += contractList.get(i).getId();
@@ -387,7 +390,7 @@ public class DatabaseDAO {
             PreparedStatement helpStatement = connection.prepareStatement("SELECT id FROM contract ORDER BY id DESC");
             ResultSet result = helpStatement.executeQuery();
             while (result.next()) {
-                result.getInt(2);
+                result.getInt(1);
                 idContract++;
             }
             idContract++;

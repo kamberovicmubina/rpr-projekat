@@ -15,7 +15,7 @@ public class DatabaseDAO {
     private static DatabaseDAO instance;
     private Connection connection;
     private PreparedStatement getCompanyQuery, getClientsQuery, getClientContractsQuery, getOneClientQuery, getOnePersonQuery, insertCompanyQuery,
-                                insertClientQuery;
+                                insertClientQuery, insertContractQuery;
     private ObservableList<Client> clients = FXCollections.observableArrayList();
 
     public static DatabaseDAO getInstance() {
@@ -350,6 +350,28 @@ public class DatabaseDAO {
         String date = "";
         date += String.valueOf(dateOfBirth.getYear()) + " " + String.valueOf(dateOfBirth.getMonth()) + " " + String.valueOf(dateOfBirth.getDayOfMonth());
         return date;
+    }
+
+    public void executeInsertContract (Contract contract) {
+        try {
+            insertContractQuery = connection.prepareStatement("INSERT INTO contract VALUES (?,?,?,?,?)");
+            PreparedStatement helpStatement = connection.prepareStatement("SELECT id FROM contract ORDER BY id DESC");
+            ResultSet result = helpStatement.executeQuery();
+            int idContract = 0;
+            while (result.next()) {
+                result.getInt(8);
+                idContract++;
+            }
+            idContract++;
+            insertContractQuery.setString(1, contract.getTitleOfContract());
+            insertContractQuery.setInt(2, idContract);
+            insertContractQuery.setInt(3, contract.getPerson().getId());
+            insertContractQuery.setString(4, getStringFromLocalDate(contract.getSignDate()));
+            insertContractQuery.setString(5, getStringFromLocalDate(contract.getEndDate()));
+            insertContractQuery.executeUpdate();
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
     }
 
 

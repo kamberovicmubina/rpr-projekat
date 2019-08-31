@@ -15,6 +15,15 @@ public class Company {
     private Person owner;
     private ObservableList<String> services;
     private ObjectProperty<Client> clickedClient = new SimpleObjectProperty<>();
+    private int id;
+
+    public int getId() {
+        return id;
+    }
+
+    public void setId(int id) {
+        this.id = id;
+    }
 
     public Company(String name, String address, ObservableList<Department> departments, ObservableList<Employee> employees, ObservableList<Client> clients, Person owner, ObservableList<String> services) {
         this.name = name;

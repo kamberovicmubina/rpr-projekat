@@ -21,7 +21,7 @@ public class Main extends Application {
 
     @Override
     public void start(Stage primaryStage) throws Exception{
-        ObservableList<Department> departments = FXCollections.observableArrayList();
+       /* ObservableList<Department> departments = FXCollections.observableArrayList();
         ObservableList<Employee> employees = FXCollections.observableArrayList();
         ObservableList<Client> clients = FXCollections.observableArrayList();
         LocalDate date = LocalDate.of(1998, 7,27);
@@ -40,13 +40,12 @@ public class Main extends Application {
         clients.add(novi);
         ObservableList<String> services = FXCollections.observableArrayList();
         services.addAll("General Contracting", "Pre-Construction", "Design-Build Services", "Construction Management");
-        Company company = new Company("Building company", "Obala 2", departments, employees, clients, null, services);
+        Company company = new Company("Building company", "Obala 2", departments, employees, clients, null, services);*/
 
-
+        DatabaseDAO databaseDAO = DatabaseDAO.getInstance();
         ResourceBundle bundle = ResourceBundle.getBundle("Translation", new Locale("en", "EN"));
-
         FXMLLoader loader = new FXMLLoader(getClass().getResource("/fxml/sample.fxml"), bundle);
-        loader.setController(new Controller(company));
+        loader.setController(new Controller(databaseDAO));
         Parent root = loader.load();
         primaryStage.setTitle("CRM");
         primaryStage.setResizable(false);
@@ -57,5 +56,6 @@ public class Main extends Application {
 
     public static void main(String[] args) {
         launch(args);
+        DatabaseDAO.removeInstance();
     }
 }

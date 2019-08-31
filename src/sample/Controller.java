@@ -1,5 +1,7 @@
 package sample;
 
+import javafx.collections.FXCollections;
+import javafx.collections.ObservableList;
 import javafx.event.EventHandler;
 import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
@@ -11,6 +13,7 @@ import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.Region;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
+import javafx.stage.WindowEvent;
 
 import java.io.IOException;
 import java.net.URL;
@@ -31,22 +34,24 @@ public class Controller implements Initializable {
     public MenuItem englishOption;
     public BorderPane borderPane;
     private ResourceBundle bundle;
-    private Company companyModel;
+  //  private Company companyModel;
+    private DatabaseDAO dao;
+    private ObservableList<String> servicesObservableList = FXCollections.observableArrayList();
 
 
-    public Controller (Company companyModel) {
-        this.companyModel = companyModel;
+    public Controller (DatabaseDAO databaseDAO) {
+        dao = databaseDAO;
     }
 
     @Override
     public void initialize(URL url, ResourceBundle resourceBundle) {
         bundle = resourceBundle;
-        clientList.setItems(companyModel.getClients());
+        clientList.setItems(dao.executeGetClientsQuery());
 
         clientList.setOnMouseClicked(new EventHandler<MouseEvent>() {
             @Override
             public void handle(MouseEvent mouseEvent) {
-                companyModel.setClickedClient(clientList.getSelectionModel().getSelectedItem());
+                dao.executeGetCompanyQuery(1).setClickedClient(clientList.getSelectionModel().getSelectedItem());
                 if (mouseEvent.getClickCount() == 2) {
                     try {
                         onChange();
@@ -56,7 +61,9 @@ public class Controller implements Initializable {
                 }
             }
         });
-        servicesList.setItems(companyModel.getServices());
+    //    servicesList.setItems(dao.executeGetCompanyQuery(1).getServices());
+        servicesObservableList.addAll(dao.executeGetServices());
+        servicesList.setItems(servicesObservableList);
 
     }
 
@@ -80,13 +87,14 @@ public class Controller implements Initializable {
 
     public void onDelete () throws ObjectNotSelectedException {
         try {
-            if (companyModel.getClickedClient() != null) {
+            if (dao.executeGetCompanyQuery(1).getClickedClient() != null) {
                 Alert alert = new Alert(Alert.AlertType.INFORMATION, bundle.getString("alertClientDelete"), ButtonType.YES, ButtonType.NO);
                 alert.setTitle(bundle.getString("warning"));
                 alert.setHeaderText(null);
                 Optional<ButtonType> option = alert.showAndWait();
                 if (option.get() == ButtonType.YES) {
-                    companyModel.removeClient();
+                    //companyModel.removeClient();
+                    dao.executeDeleteClient(dao.executeGetCompanyQuery(1).getClickedClient().getId());
                     Alert newAlert = new Alert(Alert.AlertType.CONFIRMATION, bundle.getString("clientDeleted"));
                     newAlert.setTitle(bundle.getString("success"));
                     newAlert.setHeaderText(null);
@@ -105,9 +113,9 @@ public class Controller implements Initializable {
 
     public void onChange () throws ObjectNotSelectedException {
         try {
-            if (companyModel.getClickedClient() != null) {
+            if (dao.executeGetCompanyQuery(1).getClickedClient() != null) {
                 FXMLLoader loader = new FXMLLoader(getClass().getResource("/fxml/client.fxml"), bundle);
-                loader.setController(new ClientController(companyModel));
+                loader.setController(new ClientController(dao));
                 Parent root = null;
                 try {
                     root = loader.load();
@@ -116,7 +124,7 @@ public class Controller implements Initializable {
                 }
                 if (root != null) {
                     Stage secondaryStage = new Stage();
-                    secondaryStage.setTitle(companyModel.getClickedClient().getName());
+                    secondaryStage.setTitle(dao.executeGetCompanyQuery(1).getClickedClient().getName());
                     secondaryStage.setResizable(false);
                     secondaryStage.setScene(new Scene(root, Region.USE_COMPUTED_SIZE, Region.USE_COMPUTED_SIZE));
                     secondaryStage.initModality(Modality.APPLICATION_MODAL);
@@ -136,7 +144,7 @@ public class Controller implements Initializable {
 
     public void onAddService () {
         FXMLLoader loader = new FXMLLoader(getClass().getResource("/fxml/addService.fxml"), bundle);
-        loader.setController(new AddServiceController(companyModel));
+        loader.setController(new AddServiceController(dao));
         Parent root = null;
         try {
             root = loader.load();
@@ -150,6 +158,11 @@ public class Controller implements Initializable {
             secondaryStage.setScene(new Scene(root, Region.USE_COMPUTED_SIZE, Region.USE_COMPUTED_SIZE));
             secondaryStage.initModality(Modality.APPLICATION_MODAL);
             secondaryStage.show();
+            secondaryStage.setOnCloseRequest(windowEvent -> {
+                servicesObservableList.clear();
+                servicesObservableList.addAll(dao.executeGetServices());
+                secondaryStage.close();
+            });
         }
     }
 
@@ -162,7 +175,10 @@ public class Controller implements Initializable {
                 alert.setHeaderText(null);
                 Optional<ButtonType> option = alert.showAndWait();
                 if (option.get() == ButtonType.YES) {
-                    companyModel.getServices().remove(service);
+                   // companyModel.getServices().remove(service);
+                    dao.executeDeleteService(service);
+                    servicesObservableList.clear();
+                    servicesObservableList.addAll(dao.executeGetServices());
                     Alert newAlert = new Alert(Alert.AlertType.CONFIRMATION, bundle.getString("serviceDeleted"));
                     newAlert.setTitle(bundle.getString("success"));
                     newAlert.setHeaderText(null);

@@ -26,12 +26,13 @@ public class ContractsController implements Initializable {
     public TableColumn<Contract, String> Title;
     public TableColumn<Contract, LocalDate> DateFrom;
     public TableColumn<Contract, LocalDate> DateTo;
-    private Company companyModel;
+   // private Company companyModel;
+    private DatabaseDAO dao;
     private ResourceBundle bundle;
     private boolean contractSelected = false;
 
-    public ContractsController (Company cm) {
-        companyModel = cm;
+    public ContractsController (DatabaseDAO databaseDAO) {
+        dao = databaseDAO;
     }
 
     @Override
@@ -39,7 +40,8 @@ public class ContractsController implements Initializable {
         Title.setCellValueFactory(new PropertyValueFactory<>("titleOfContract"));
         DateFrom.setCellValueFactory(new PropertyValueFactory<>("signDate"));
         DateTo.setCellValueFactory(new PropertyValueFactory<>("endDate"));
-        contractTableView.setItems(companyModel.getClickedClient().getContractList());
+       // contractTableView.setItems(companyModel.getClickedClient().getContractList());
+        contractTableView.setItems(dao.executeGetClientContractsQuery(dao.executeGetCompanyQuery(1).getClickedClient().getId()));
         bundle = resourceBundle;
 
         contractTableView.setOnMouseClicked(new EventHandler<MouseEvent>() {
@@ -60,7 +62,7 @@ public class ContractsController implements Initializable {
 
     public void onAddContract () {
         FXMLLoader loader = new FXMLLoader(getClass().getResource("/fxml/addContract.fxml"), bundle);
-        loader.setController(new AddContractController(companyModel));
+        loader.setController(new AddContractController(dao));
         Parent root = null;
         try {
             root = loader.load();
@@ -84,7 +86,8 @@ public class ContractsController implements Initializable {
             alert.setHeaderText(null);
             Optional<ButtonType> option = alert.showAndWait();
             if (option.get() == ButtonType.YES) {
-                companyModel.getClickedClient().getContractList().remove(contractTableView.getSelectionModel().getSelectedItem());
+               // companyModel.getClickedClient().getContractList().remove(contractTableView.getSelectionModel().getSelectedItem());
+                dao.executeDeleteContract(contractTableView.getSelectionModel().getSelectedItem().getId());
                 Alert newAlert = new Alert(Alert.AlertType.CONFIRMATION, bundle.getString("contractDeleted"));
                 newAlert.setTitle(bundle.getString("success"));
                 newAlert.setHeaderText(null);

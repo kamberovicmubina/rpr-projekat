@@ -7,14 +7,15 @@ import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.sql.*;
 import java.time.LocalDate;
+import java.util.Arrays;
 import java.util.Scanner;
 
 public class DatabaseDAO {
     private static DatabaseDAO instance;
     private Connection connection;
-    private PreparedStatement getCompanyQuery, getClientsQuery, getClientContractsQuery, getOneClientQuery, getOnePersonQuery, insertCompanyQuery,
-                                insertClientQuery, insertContractQuery, insertPersonQuery;
-    private ObservableList<Client> clients = FXCollections.observableArrayList();
+    private PreparedStatement getCompanyQuery, getServicesQuery, getClientsQuery, getClientContractsQuery, getOneClientQuery, getOnePersonQuery, insertCompanyQuery,
+                                insertClientQuery, insertContractQuery, insertPersonQuery, deleteClientQuery, deleteContractQuery, deleteServiceQuery, changeClientQuery,
+                                changeCompanyQuery, insertServiceQuery;
 
     public static DatabaseDAO getInstance() {
         if (instance == null) instance = new DatabaseDAO();
@@ -39,6 +40,10 @@ public class DatabaseDAO {
             }
         }
 
+    }
+
+    public static void removeInstance() {
+        instance = null;
     }
 
     private void regenerateDatabase ()  {
@@ -73,16 +78,16 @@ public class DatabaseDAO {
             ResultSet rs = getCompanyQuery.executeQuery();
             // only one row will be returned
             String name = rs.getString(1);
-            String address = rs.getString(2);
-            String departments = rs.getString(3);
+            String address = rs.getString(3);
+            String departments = rs.getString(4);
             ObservableList<Department> departmentList = getDepartmentsFromString (departments);
-            String employees = rs.getString(4);
+            String employees = rs.getString(5);
             ObservableList<Employee> employeeList = getEmployeesFromString (employees);
-            String clients = rs.getString(5);
+            String clients = rs.getString(6);
             ObservableList<Client> clientList = getClientsFromString (clients);
-            String services = rs.getString(6);
+            String services = rs.getString(7);
             ObservableList<String> serviceList = getServicesFromString (services);
-            int ownerId = rs.getInt(7);
+            int ownerId = rs.getInt(8);
             Person owner = executeGetOnePerson(ownerId);
             company = new Company(name, address, departmentList, employeeList, clientList, owner, serviceList);
         } catch (SQLException e) {
@@ -96,9 +101,7 @@ public class DatabaseDAO {
         if (services.length() == 0) return null;
         ObservableList<String> serviceList = FXCollections.observableArrayList();
         String[] names = services.split(", ");
-        for (String s : names) {
-            serviceList.add(s);
-        }
+        serviceList.addAll(Arrays.asList(names));
         return serviceList;
     }
 
@@ -235,17 +238,22 @@ public class DatabaseDAO {
             getOnePersonQuery.setInt(1, idPerson);
             ResultSet rs = getOnePersonQuery.executeQuery();
             // one row will be returned
-            String name = rs.getString(2);
-            String dateOfBirth = rs.getString(3);
-            LocalDate dateLocal = getLocalDateFromString (dateOfBirth);
-            String address = rs.getString(4);
-            String phone = rs.getString(5);
-            String eMail = rs.getString(6);
-            person = new Person(name, dateLocal, address, phone, eMail);
+            //just in case
+            while (rs.next()) {
+                String name = rs.getString(2);
+                String dateOfBirth = rs.getString(3);
+                LocalDate dateLocal = getLocalDateFromString (dateOfBirth);
+                String address = rs.getString(4);
+                String phone = rs.getString(5);
+                String eMail = rs.getString(6);
+                person = new Person(name, dateLocal, address, phone, eMail);
+                return person;
+            }
+
         } catch (SQLException e) {
             e.printStackTrace();
         }
-        return person;
+       return person;
     }
 
     public void executeInsertCompany (Company company) {
@@ -333,6 +341,28 @@ public class DatabaseDAO {
         } catch (SQLException e) {
             e.printStackTrace();
         }
+
+        // update kompanije
+        try {
+            changeCompanyQuery = connection.prepareStatement("UPDATE company SET clients=? WHERE id=?");
+            PreparedStatement helpStatement = connection.prepareStatement("SELECT clients FROM company WHERE id=?");
+            helpStatement.setInt(1, 1);
+            ResultSet rs = helpStatement.executeQuery();
+            String newClients = "";
+            while (rs.next()) {
+                newClients = addIdToString(rs.getString(1), client.getId());
+            }
+            changeCompanyQuery.setString(1, newClients);
+            changeCompanyQuery.setInt(2, 1);
+            changeCompanyQuery.executeUpdate();
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+    }
+
+    private String addIdToString(String oldString, int id) {
+        oldString += " " + String.valueOf(id);
+        return oldString;
     }
 
     private String getStringFromContracts(ObservableList<Contract> contractList) {
@@ -351,11 +381,11 @@ public class DatabaseDAO {
     }
 
     public void executeInsertContract (Contract contract) {
+        int idContract = 0;
         try {
             insertContractQuery = connection.prepareStatement("INSERT INTO contract VALUES (?,?,?,?,?)");
             PreparedStatement helpStatement = connection.prepareStatement("SELECT id FROM contract ORDER BY id DESC");
             ResultSet result = helpStatement.executeQuery();
-            int idContract = 0;
             while (result.next()) {
                 result.getInt(2);
                 idContract++;
@@ -370,6 +400,24 @@ public class DatabaseDAO {
         } catch (SQLException e) {
             e.printStackTrace();
         }
+
+        // update company
+        try {
+            changeCompanyQuery = connection.prepareStatement("UPDATE company SET contracts=? WHERE id=?");
+            PreparedStatement helpStatement = connection.prepareStatement("SELECT contracts FROM company WHERE id=?");
+            helpStatement.setInt(1, 1);
+            ResultSet rs = helpStatement.executeQuery();
+            String newContracts = "";
+            while (rs.next()) {
+                newContracts = addIdToString(rs.getString(1), idContract);
+            }
+            changeCompanyQuery.setString(1, newContracts);
+            changeCompanyQuery.setInt(2, 1);
+            changeCompanyQuery.executeUpdate();
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+
     }
 
     public void executeInsertPerson (Person person) {
@@ -394,5 +442,189 @@ public class DatabaseDAO {
             e.printStackTrace();
         }
     }
+
+    public void executeDeleteClient (int id) {
+        try {
+            deleteClientQuery = connection.prepareStatement("DELETE FROM client WHERE id=?");
+            deleteClientQuery.setInt(1, id);
+            deleteClientQuery.executeUpdate();
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        //update company
+        try {
+            changeCompanyQuery = connection.prepareStatement("UPDATE company SET clients=? WHERE id=?");
+            PreparedStatement helpStatement = connection.prepareStatement("SELECT clients FROM company WHERE id=?");
+            helpStatement.setInt(1, 1);
+            ResultSet rs = helpStatement.executeQuery();
+            String newClients = "";
+            while (rs.next()) {
+                newClients = deleteIdFromString(rs.getString(1), id);
+            }
+            changeCompanyQuery.setString(1, newClients);
+            changeCompanyQuery.setInt(2, 1);
+            changeCompanyQuery.executeUpdate();
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+
+    }
+
+    private String deleteIdFromString(String string, int id) {
+        String idString = "";
+        StringBuilder builder = null;
+        for (int i = 0; i < string.length(); i++) {
+            if (string.charAt(i) != ' ') {
+                idString += string.charAt(i);
+            } else {
+                int idNumber = Integer.parseInt(idString);
+                if (idNumber == id) { // we need to delete this
+                    int startIndex, endIndex;
+                    if (i != string.length()-1) { // and a blank space after the number
+                        startIndex = string.indexOf(idString);
+                        endIndex = startIndex + idString.length() + 1;
+                    } else {
+                        if (i == 0) startIndex = 0;
+                        else startIndex = string.indexOf(idString) - 1; // blank space before the number
+                        endIndex = startIndex + idString.length();
+                    }
+                    builder = new StringBuilder(string);
+                    builder.delete(startIndex, endIndex);
+                    string = builder.toString();
+                    return string;
+                }
+                idString = "";
+            }
+        }
+        return string;
+    }
+
+    public void executeDeleteContract (int id) {
+        try {
+            deleteContractQuery = connection.prepareStatement("DELETE FROM contract WHERE id=?");
+            deleteContractQuery.setInt(1, id);
+            deleteContractQuery.executeUpdate();
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        // update company
+        try {
+            changeCompanyQuery = connection.prepareStatement("UPDATE company SET contracts=? WHERE id=?");
+            PreparedStatement helpStatement = connection.prepareStatement("SELECT contracts FROM company WHERE id=?");
+            helpStatement.setInt(1, 1);
+            ResultSet rs = helpStatement.executeQuery();
+            String newContracts = "";
+            while (rs.next()) {
+                newContracts = deleteIdFromString(rs.getString(1), id);
+            }
+            changeCompanyQuery.setString(1, newContracts);
+            changeCompanyQuery.setInt(2, 1);
+            changeCompanyQuery.executeUpdate();
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+    }
+
+    public void executeChangeClient (Client client) {
+        try {
+            changeClientQuery = connection.prepareStatement("UPDATE client SET name=?, date_of_birth=?, address=?, phone_number=?, e_mail=?, contracts=?, profit=? WHERE id=?");
+            changeClientQuery.setString(1, client.getName());
+            changeClientQuery.setString(2, getStringFromLocalDate(client.getDateOfBirth()));
+            changeClientQuery.setString(3, client.getAddress());
+            changeClientQuery.setString(4, client.getPhoneNumber());
+            changeClientQuery.setString(5, client.getEMail());
+            changeClientQuery.setString(6, getStringFromContracts(client.getContractList()));
+            changeClientQuery.setDouble(7, client.getProfit());
+            changeClientQuery.setInt(8, client.getId());
+            changeClientQuery.executeUpdate();
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+    }
+
+    public void executeInsertService (String newService) {
+        try {
+            insertServiceQuery = connection.prepareStatement("UPDATE company SET services=? WHERE id=?");
+            getServicesQuery = connection.prepareStatement("SELECT services FROM company WHERE id=?");
+            getServicesQuery.setInt(1, 1);
+            ResultSet rs = getServicesQuery.executeQuery();
+            String services = "";
+            while (rs.next()) {
+                services = rs.getString(1);
+            }
+            services += ", " + newService;
+            insertServiceQuery.setString(1, services);
+            insertServiceQuery.setInt(2, 1);
+            insertServiceQuery.executeUpdate();
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+
+    }
+
+    public ObservableList<String> executeGetServices () {
+        String services = "";
+        try {
+            getServicesQuery = connection.prepareStatement("SELECT services FROM company WHERE id=?");
+            getServicesQuery.setInt(1, 1);
+            ResultSet rs = getServicesQuery.executeQuery();
+            while (rs.next()) {
+                services = rs.getString(1);
+            }
+
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return getServicesFromString(services);
+    }
+
+    public void executeDeleteService (String service) {
+        // update company
+        try {
+            deleteServiceQuery = connection.prepareStatement("UPDATE company SET services=? WHERE id=?");
+            getServicesQuery = connection.prepareStatement("SELECT services FROM company WHERE id=?");
+            getServicesQuery.setInt(1, 1);
+            ResultSet rs = getServicesQuery.executeQuery();
+            String services = "";
+            while (rs.next()) {
+                services = rs.getString(1);
+            }
+            deleteServiceQuery.setString(1, deleteStringFromString(services, service));
+            deleteServiceQuery.setInt(2, 1);
+            deleteServiceQuery.executeUpdate();
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+    }
+
+    private String deleteStringFromString(String services, String service) {
+        String serviceInString = "";
+        StringBuilder builder = null;
+        int startIndex, endIndex;
+        for (int i = 0; i < services.length(); i++) {
+            if ((services.charAt(i) != ',' && services.charAt(i) != ' ') || i == services.length()-1) {
+                serviceInString += services.charAt(i);
+            } else {
+                if (serviceInString.equals(service)) { // we need to delete this
+                    startIndex = services.indexOf(serviceInString); // and comma and blank space after the service
+                    endIndex = startIndex + serviceInString.length() + 2;
+                    builder = new StringBuilder(services);
+                    builder.delete(startIndex, endIndex);
+                    services = builder.toString();
+                    return services;
+                }
+                serviceInString = "";
+            }
+        }
+        // last word
+        if (services.indexOf(serviceInString) == 0) startIndex = 0;
+        else startIndex = services.indexOf(serviceInString) - 2; // comma and blank space before the service
+        endIndex = startIndex + serviceInString.length();
+        builder = new StringBuilder(services);
+        builder.delete(startIndex, endIndex);
+        services = builder.toString();
+        return services;
+    }
+
 
 }

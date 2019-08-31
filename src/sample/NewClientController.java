@@ -110,6 +110,7 @@ public class NewClientController implements Initializable {
             String eMail = eMailField.getText();
             Client newClient = new Client(name, date, address, phone, eMail, null);
             Company.addClient(newClient);
+
             Alert alert = new Alert(Alert.AlertType.INFORMATION);
             alert.setTitle(bundle.getString("success"));
             alert.setHeaderText(null);

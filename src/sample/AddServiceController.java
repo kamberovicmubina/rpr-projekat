@@ -12,21 +12,21 @@ import java.util.ResourceBundle;
 public class AddServiceController implements Initializable {
     public TextField serviceField;
     public Button addBtn;
-    private Company companyModel;
+   // private Company companyModel;
+    private DatabaseDAO dao;
     private ResourceBundle bundle;
 
-    public AddServiceController (Company cm) {
-        companyModel = cm;
+    public AddServiceController (DatabaseDAO databaseDAO) {
+        dao = databaseDAO;
     }
 
     public void onAdd () {
-        companyModel.getServices().add(serviceField.getText());
+        //dao.executeGetCompanyQuery(1).getServices().add(serviceField.getText());
+        dao.executeInsertService(serviceField.getText());
         Alert newAlert = new Alert(Alert.AlertType.CONFIRMATION, bundle.getString("serviceAdded"));
         newAlert.setTitle(bundle.getString("success"));
         newAlert.setHeaderText(null);
         newAlert.show();
-        Stage stage = (Stage) addBtn.getScene().getWindow();
-        stage.close();
     }
 
     @Override

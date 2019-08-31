@@ -39,7 +39,9 @@ public class ClientController implements Initializable {
     private SimpleStringProperty phoneProperty;
     private SimpleStringProperty eMailProperty;
     private ObjectProperty<LocalDate> dateOfBirthProperty;
-    private Company companyModel;
+   // private Company companyModel;
+    private DatabaseDAO dao;
+    private Company company;
     private boolean nameValid = true;
     private boolean addressValid = true;
     private boolean phoneValid = true;
@@ -47,13 +49,14 @@ public class ClientController implements Initializable {
     private boolean dateValid = true;
     private ResourceBundle bundle;
 
-    public ClientController (Company cm) {
-        companyModel = cm;
-        nameProperty = new SimpleStringProperty(companyModel.getClickedClient().getName());
-        addressProperty = new SimpleStringProperty(companyModel.getClickedClient().getAddress());
-        phoneProperty = new SimpleStringProperty(companyModel.getClickedClient().getPhoneNumber());
-        eMailProperty = new SimpleStringProperty(companyModel.getClickedClient().getEMail());
-        dateOfBirthProperty = new SimpleObjectProperty<>(companyModel.getClickedClient().getDateOfBirth());
+    public ClientController (DatabaseDAO databaseDAO) {
+        dao = databaseDAO;
+        company = dao.executeGetCompanyQuery(1);
+        nameProperty = new SimpleStringProperty(company.getClickedClient().getName());
+        addressProperty = new SimpleStringProperty(company.getClickedClient().getAddress());
+        phoneProperty = new SimpleStringProperty(company.getClickedClient().getPhoneNumber());
+        eMailProperty = new SimpleStringProperty(company.getClickedClient().getEMail());
+        dateOfBirthProperty = new SimpleObjectProperty<>(company.getClickedClient().getDateOfBirth());
     }
 
 
@@ -67,11 +70,11 @@ public class ClientController implements Initializable {
         eMailField.textProperty().bindBidirectional(eMailProperty);
         dateOfBirthPicker.valueProperty().bindBidirectional(dateOfBirthProperty);
 
-        nameField.setText(companyModel.getClickedClient().getName());
-        addressField.setText(companyModel.getClickedClient().getAddress());
-        phoneField.setText(companyModel.getClickedClient().getPhoneNumber());
-        eMailField.setText(companyModel.getClickedClient().getEMail());
-        dateOfBirthPicker.setValue(companyModel.getClickedClient().getDateOfBirth());
+        nameField.setText(company.getClickedClient().getName());
+        addressField.setText(company.getClickedClient().getAddress());
+        phoneField.setText(company.getClickedClient().getPhoneNumber());
+        eMailField.setText(company.getClickedClient().getEMail());
+        dateOfBirthPicker.setValue(company.getClickedClient().getDateOfBirth());
 
         // validation of fields in case they are changed
         nameField.textProperty().addListener((observableValue, o, n) -> {
@@ -155,7 +158,9 @@ public class ClientController implements Initializable {
             String phone = phoneField.getText();
             String eMail = eMailField.getText();
             Client newClient = new Client(name, date, address, phone, eMail, null);
-            companyModel.changeClient(companyModel.getClickedClient(), newClient);
+            //companyModel.changeClient(companyModel.getClickedClient(), newClient);
+            newClient.setId(company.getClickedClient().getId());
+            dao.executeChangeClient(newClient);
             Alert alert = new Alert(Alert.AlertType.INFORMATION);
             alert.setTitle(bundle.getString("success"));
             alert.setHeaderText(null);
@@ -176,7 +181,8 @@ public class ClientController implements Initializable {
         alert.setHeaderText(null);
         Optional<ButtonType> option = alert.showAndWait();
         if (option.get() == ButtonType.YES) {
-            companyModel.removeClient();
+          //  companyModel.removeClient();
+            dao.executeDeleteClient(company.getClickedClient().getId());
             Alert newAlert = new Alert(Alert.AlertType.CONFIRMATION, bundle.getString("clientDeleted"));
             newAlert.setTitle(bundle.getString("success"));
             newAlert.setHeaderText(null);
@@ -188,7 +194,7 @@ public class ClientController implements Initializable {
 
     public void contractsClicked () {
         FXMLLoader loader = new FXMLLoader(getClass().getResource("/fxml/contracts.fxml"), bundle);
-        loader.setController(new ContractsController(companyModel));
+        loader.setController(new ContractsController(dao));
         Parent root = null;
         try {
             root = loader.load();

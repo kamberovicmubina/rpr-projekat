@@ -197,7 +197,7 @@ public class ClientController implements Initializable {
 
     public void contractsClicked () {
         FXMLLoader loader = new FXMLLoader(getClass().getResource("/fxml/contracts.fxml"), bundle);
-        loader.setController(new ContractsController(dao));
+        loader.setController(new ContractsController(dao, company));
         Parent root = null;
         try {
             root = loader.load();

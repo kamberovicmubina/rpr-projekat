@@ -22,9 +22,9 @@ public class AddContractController implements Initializable {
     private Company company;
     private ResourceBundle bundle;
 
-    public AddContractController (DatabaseDAO databaseDAO) {
+    public AddContractController (DatabaseDAO databaseDAO, Company company) {
         dao = databaseDAO;
-        company = dao.executeGetCompanyQuery(1);
+        this.company = company;
     }
 
     @Override
@@ -35,6 +35,7 @@ public class AddContractController implements Initializable {
     public void onSave () {
         if (FieldsValidation.validDate(fromPicker.getValue()) && FieldsValidation.dateInFuture(toPicker.getValue())) {
             Contract newContract = new Contract(titleField.getText(), company.getClickedClient(), fromPicker.getValue(), toPicker.getValue());
+            newContract.setId(dao.getNextAvailableContractId());
           //  companyModel.getClickedClient().getContractList().add(newContract);
             dao.executeInsertContract(newContract);
             Alert newAlert = new Alert(Alert.AlertType.CONFIRMATION, bundle.getString("contractAdded"));

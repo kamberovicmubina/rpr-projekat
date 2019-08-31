@@ -15,6 +15,7 @@ public class Company {
     private Person owner;
     private ObservableList<String> services;
     private ObjectProperty<Client> clickedClient = new SimpleObjectProperty<>();
+    private ObjectProperty<Contract> clickedContract = new SimpleObjectProperty<>();
     private int id;
 
     public int getId() {
@@ -47,6 +48,18 @@ public class Company {
 
     public void setClickedClient(Client c) {
         clickedClient.set(c);
+    }
+
+    public ObjectProperty<Contract> clickedContractProperty()  {
+        return clickedContract;
+    }
+
+    public Contract getClickedContract() {
+        return clickedContract.get();
+    }
+
+    public void setClickedContract(Contract c) {
+        clickedContract.set(c);
     }
 
     public ObservableList<String> getServices() {

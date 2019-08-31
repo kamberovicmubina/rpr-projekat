@@ -217,6 +217,7 @@ public class DatabaseDAO {
                 LocalDate endLocal = getLocalDateFromString(endDate);
                 Person person = executeGetOneClient(idClient);
                 Contract contract = new Contract(title, person, signLocal, endLocal);
+                contract.setId(getNextAvailableContractId());
                 contracts.add(contract);
                 ((Client) person).setContractList(contracts);
                 contract.setPerson(person);
@@ -416,19 +417,13 @@ public class DatabaseDAO {
     }
 
     public void executeInsertContract (Contract contract) {
-        int idContract = 0;
+      //  int idContract = 0;
         try {
             insertContractQuery = connection.prepareStatement("INSERT INTO contract VALUES (?,?,?,?,?)");
-            PreparedStatement helpStatement = connection.prepareStatement("SELECT id FROM contract ORDER BY id DESC");
-            ResultSet result = helpStatement.executeQuery();
-            while (result.next()) {
-                result.getInt(1);
-                idContract++;
-            }
-            idContract++;
-            contract.setId(idContract);
+          //  contract.setId(idContract);
+            System.out.println("IZ DATABASEDAO ID UGOVORA DODANOG JE " + contract.getId());
             insertContractQuery.setString(1, contract.getTitleOfContract());
-            insertContractQuery.setInt(2, idContract);
+            insertContractQuery.setInt(2, contract.getId());
             insertContractQuery.setInt(3, contract.getPerson().getId());
             insertContractQuery.setString(4, getStringFromLocalDate(contract.getSignDate()));
             insertContractQuery.setString(5, getStringFromLocalDate(contract.getEndDate()));
@@ -437,23 +432,58 @@ public class DatabaseDAO {
             e.printStackTrace();
         }
 
-        // update company
+        // update client
         try {
-            changeCompanyQuery = connection.prepareStatement("UPDATE company SET contracts=? WHERE id=?");
-            PreparedStatement helpStatement = connection.prepareStatement("SELECT contracts FROM company WHERE id=?");
-            helpStatement.setInt(1, 1);
+            changeCompanyQuery = connection.prepareStatement("UPDATE client SET contracts=? WHERE id=?");
+            PreparedStatement helpStatement = connection.prepareStatement("SELECT contracts FROM client WHERE id=?");
+            helpStatement.setInt(1, contract.getPerson().getId()) ;
             ResultSet rs = helpStatement.executeQuery();
             String newContracts = "";
             while (rs.next()) {
-                newContracts = addIdToString(rs.getString(1), idContract);
+                newContracts = addIdToString(rs.getString(1), contract.getId());
             }
             changeCompanyQuery.setString(1, newContracts);
+            changeCompanyQuery.setInt(2, contract.getPerson().getId());
+            changeCompanyQuery.executeUpdate();
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        // update kompanije
+        try {
+            changeCompanyQuery = connection.prepareStatement("UPDATE company SET clients=? WHERE id=?");
+            PreparedStatement helpStatement = connection.prepareStatement("SELECT clients FROM company WHERE id=?");
+            helpStatement.setInt(1, 1);
+            ResultSet rs = helpStatement.executeQuery();
+            String newClients = "";
+            while (rs.next()) {
+                newClients = addIdToString(rs.getString(1), contract.getPerson().getId());
+            }
+            changeCompanyQuery.setString(1, newClients);
             changeCompanyQuery.setInt(2, 1);
             changeCompanyQuery.executeUpdate();
         } catch (SQLException e) {
             e.printStackTrace();
         }
 
+        System.out.println("IZ DATABASEDAO NAKON DODVANJA UGOVORA ID JE " + contract.getId());
+
+    }
+    public int getNextAvailableContractId () {
+        PreparedStatement helpStatement = null;
+        try {
+            int idContract = 0;
+            helpStatement = connection.prepareStatement("SELECT id FROM contract ORDER BY id DESC");
+            ResultSet result = helpStatement.executeQuery();
+            while (result.next()) {
+                result.getInt(1);
+                idContract++;
+            }
+            idContract++;
+            return idContract;
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return 0;
     }
 
     public void executeInsertPerson (Person person) {
@@ -507,6 +537,8 @@ public class DatabaseDAO {
 
     }
 
+
+
     private String deleteIdFromString(String string, int id) {
         String idString = "";
         StringBuilder builder = null;
@@ -537,24 +569,47 @@ public class DatabaseDAO {
     }
 
     public void executeDeleteContract (int id) {
+        System.out.println("IZ DATABASEDAO BRISANJE UGOVORA ID " + id);
+        int personId = 0;
         try {
+            PreparedStatement statement = connection.prepareStatement("SELECT person FROM contract WHERE id=?");
+            statement.setInt(1, id);
+            ResultSet rs = statement.executeQuery();
+            while (rs.next())
+                personId = rs.getInt(1);
             deleteContractQuery = connection.prepareStatement("DELETE FROM contract WHERE id=?");
             deleteContractQuery.setInt(1, id);
             deleteContractQuery.executeUpdate();
         } catch (SQLException e) {
             e.printStackTrace();
         }
-        // update company
+        // update client
         try {
-            changeCompanyQuery = connection.prepareStatement("UPDATE company SET contracts=? WHERE id=?");
-            PreparedStatement helpStatement = connection.prepareStatement("SELECT contracts FROM company WHERE id=?");
-            helpStatement.setInt(1, 1);
+            changeCompanyQuery = connection.prepareStatement("UPDATE client SET contracts=? WHERE id=?");
+            PreparedStatement helpStatement = connection.prepareStatement("SELECT contracts FROM client WHERE id=?");
+            helpStatement.setInt(1, personId);
             ResultSet rs = helpStatement.executeQuery();
             String newContracts = "";
             while (rs.next()) {
                 newContracts = deleteIdFromString(rs.getString(1), id);
             }
             changeCompanyQuery.setString(1, newContracts);
+            changeCompanyQuery.setInt(2, personId);
+            changeCompanyQuery.executeUpdate();
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        // update kompanije
+        try {
+            changeCompanyQuery = connection.prepareStatement("UPDATE company SET clients=? WHERE id=?");
+            PreparedStatement helpStatement = connection.prepareStatement("SELECT clients FROM company WHERE id=?");
+            helpStatement.setInt(1, 1);
+            ResultSet rs = helpStatement.executeQuery();
+            String newClients = "";
+            while (rs.next()) {
+                newClients = addIdToString(rs.getString(1), personId);
+            }
+            changeCompanyQuery.setString(1, newClients);
             changeCompanyQuery.setInt(2, 1);
             changeCompanyQuery.executeUpdate();
         } catch (SQLException e) {

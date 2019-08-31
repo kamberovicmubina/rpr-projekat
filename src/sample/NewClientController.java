@@ -114,6 +114,7 @@ public class NewClientController implements Initializable {
             String phone = phoneField.getText();
             String eMail = eMailField.getText();
             Client newClient = new Client(name, date, address, phone, eMail, null);
+            newClient.setId(dao.getNextAvailableClientId());
             //Company.addClient(newClient);
             dao.executeInsertClient(newClient);
             Alert alert = new Alert(Alert.AlertType.INFORMATION);

@@ -146,7 +146,9 @@ public class DatabaseDAO {
             while (rs.next()) {
                 String name = rs.getString(1);
                 String dateOfBirth = rs.getString(2);
+            //    System.out.println("IZ DATABASEDAO STRING" + dateOfBirth);
                 LocalDate dateLocal = getLocalDateFromString (dateOfBirth);
+          //      System.out.println("IZ DATABASEDAO " + dateLocal);
                 String address = rs.getString(3);
                 String phone = rs.getString(4);
                 String eMail = rs.getString(5);
@@ -154,6 +156,7 @@ public class DatabaseDAO {
                 ObservableList<Contract> contractsList = executeGetClientContractsQuery(idClient);
                 double profit = rs.getDouble(7);
                 Client client = new Client(name, dateLocal, address, phone, eMail, contractsList, profit);
+                client.setId(idClient);
                 clients.add(client);
             }
         } catch (SQLException e) {
@@ -163,22 +166,39 @@ public class DatabaseDAO {
     }
 
     private LocalDate getLocalDateFromString(String dateOfBirth) {
-        if (dateOfBirth.length() == 0) return null;
+        if (dateOfBirth.length() == 0) {
+            System.out.println("PRAZAN STRING");
+            return null;
+        }
         //string has to be in following format in order for this function to work: "YYYY MM DD"
+        int year = Integer.parseInt(dateOfBirth.substring(0, 4));
         if (dateOfBirth.matches("^\\d\\d\\d\\d \\d\\d \\d\\d$") ) {
-            // check if month is between 01 and 12
-            if (dateOfBirth.charAt(5) == '0' || (dateOfBirth.charAt(5) == '1' && (dateOfBirth.charAt(6) == '0' || dateOfBirth.charAt(6) == '1' || dateOfBirth.charAt(6) == '2'))){
-                // check if day is between 01 and 31
-                if (dateOfBirth.charAt(8) >= '0' && dateOfBirth.charAt(8) < '4') {
-                    if (dateOfBirth.charAt(8) == '3' && (dateOfBirth.charAt(9) == '0' || dateOfBirth.charAt(9) == '1')) {
-                        int year = Integer.parseInt(dateOfBirth.substring(0, 4));
-                        int month = Integer.parseInt(dateOfBirth.substring(5, 7));
-                        int day = Integer.parseInt(dateOfBirth.substring(8, 10));
-                        LocalDate localDate = LocalDate.of(year, month, day);
-                        return localDate;
-                    }
-                }
-            }
+            int month = Integer.parseInt(dateOfBirth.substring(5, 7));
+            int day = Integer.parseInt(dateOfBirth.substring(8, 10));
+         //   System.out.println("Godina" + year + ", mjesec " + month + ", dan " + day);
+            LocalDate localDate = LocalDate.of(year, month, day);
+            return localDate;
+        } else if (dateOfBirth.matches("^\\d\\d\\d\\d \\d \\d\\d$")) {
+            int month = Integer.parseInt(dateOfBirth.substring(5, 6));
+            int day = Integer.parseInt(dateOfBirth.substring(7, 9));
+          //  System.out.println("Godina" + year + ", mjesec " + month + ", dan " + day);
+            LocalDate localDate = LocalDate.of(year, month, day);
+            return localDate;
+        } else if (dateOfBirth.matches("^\\d\\d\\d\\d \\d \\d$")) {
+            int month = Integer.parseInt(dateOfBirth.substring(5, 6));
+            int day = Integer.parseInt(dateOfBirth.substring(7, 8));
+         //   System.out.println("Godina" + year + ", mjesec " + month + ", dan " + day);
+            LocalDate localDate = LocalDate.of(year, month, day);
+            return localDate;
+        } else if (dateOfBirth.matches("^\\d\\d\\d\\d \\d\\d \\d$")) {
+            int month = Integer.parseInt(dateOfBirth.substring(5, 7));
+            int day = Integer.parseInt(dateOfBirth.substring(8, 9));
+         //   System.out.println("Godina" + year + ", mjesec " + month + ", dan " + day);
+            LocalDate localDate = LocalDate.of(year, month, day);
+            return localDate;
+        } else {
+            System.out.println("NE VALJA OPET");
+            System.out.println("ovo je string" + dateOfBirth);
         }
         return null;
     }
@@ -320,10 +340,10 @@ public class DatabaseDAO {
         return deps;
     }
 
-    public void executeInsertClient (Client client) {
+    public int getNextAvailableClientId () {
+        PreparedStatement helpStatement = null;
         try {
-            insertClientQuery = connection.prepareStatement("INSERT INTO client VALUES (?,?,?,?,?,?,?,?)");
-            PreparedStatement helpStatement = connection.prepareStatement("SELECT id FROM client ORDER BY id DESC");
+            helpStatement = connection.prepareStatement("SELECT id FROM client ORDER BY id DESC");
             ResultSet result = helpStatement.executeQuery();
             int idClient = 0;
             while (result.next()) {
@@ -331,6 +351,18 @@ public class DatabaseDAO {
                 idClient++;
             }
             idClient++;
+            return idClient;
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return 0;
+    }
+
+    public void executeInsertClient (Client client) {
+        try {
+            insertClientQuery = connection.prepareStatement("INSERT INTO client VALUES (?,?,?,?,?,?,?,?)");
+           /* int idClient = getNextAvailableClientId();
+            client.setId(idClient);*/
             insertClientQuery.setString(1, client.getName());
             insertClientQuery.setString(2, getStringFromLocalDate(client.getDateOfBirth()));
             insertClientQuery.setString(3, client.getAddress());
@@ -338,7 +370,7 @@ public class DatabaseDAO {
             insertClientQuery.setString(5, client.getEMail());
             insertClientQuery.setString(6, getStringFromContracts(client.getContractList()));
             insertClientQuery.setDouble(7, client.getProfit());
-            insertClientQuery.setInt(8, idClient);
+            insertClientQuery.setInt(8, client.getId());
             insertClientQuery.executeUpdate();
         } catch (SQLException e) {
             e.printStackTrace();
@@ -379,7 +411,7 @@ public class DatabaseDAO {
 
     private String getStringFromLocalDate(LocalDate dateOfBirth) {
         String date = "";
-        date += String.valueOf(dateOfBirth.getYear()) + " " + String.valueOf(dateOfBirth.getMonth()) + " " + String.valueOf(dateOfBirth.getDayOfMonth());
+        date += String.valueOf(dateOfBirth.getYear()) + " " + dateOfBirth.getMonthValue() + " " + String.valueOf(dateOfBirth.getDayOfMonth());
         return date;
     }
 
@@ -394,6 +426,7 @@ public class DatabaseDAO {
                 idContract++;
             }
             idContract++;
+            contract.setId(idContract);
             insertContractQuery.setString(1, contract.getTitleOfContract());
             insertContractQuery.setInt(2, idContract);
             insertContractQuery.setInt(3, contract.getPerson().getId());
@@ -434,6 +467,7 @@ public class DatabaseDAO {
                 idPerson++;
             }
             idPerson++;
+            person.setId(idPerson);
             insertPersonQuery.setInt(1, idPerson);
             insertPersonQuery.setString(2, person.getName());
             insertPersonQuery.setString(3, getStringFromLocalDate(person.getDateOfBirth()));
@@ -540,6 +574,22 @@ public class DatabaseDAO {
             changeClientQuery.setDouble(7, client.getProfit());
             changeClientQuery.setInt(8, client.getId());
             changeClientQuery.executeUpdate();
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        // update kompanije
+        try {
+            changeCompanyQuery = connection.prepareStatement("UPDATE company SET clients=? WHERE id=?");
+            PreparedStatement helpStatement = connection.prepareStatement("SELECT clients FROM company WHERE id=?");
+            helpStatement.setInt(1, 1);
+            ResultSet rs = helpStatement.executeQuery();
+            String newClients = "";
+            while (rs.next()) {
+                newClients = addIdToString(rs.getString(1), client.getId());
+            }
+            changeCompanyQuery.setString(1, newClients);
+            changeCompanyQuery.setInt(2, 1);
+            changeCompanyQuery.executeUpdate();
         } catch (SQLException e) {
             e.printStackTrace();
         }

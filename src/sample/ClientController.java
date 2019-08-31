@@ -49,14 +49,14 @@ public class ClientController implements Initializable {
     private boolean dateValid = true;
     private ResourceBundle bundle;
 
-    public ClientController (DatabaseDAO databaseDAO) {
+    public ClientController (DatabaseDAO databaseDAO, Company company) {
         dao = databaseDAO;
-        company = dao.executeGetCompanyQuery(1);
-        nameProperty = new SimpleStringProperty(company.getClickedClient().getName());
-        addressProperty = new SimpleStringProperty(company.getClickedClient().getAddress());
-        phoneProperty = new SimpleStringProperty(company.getClickedClient().getPhoneNumber());
-        eMailProperty = new SimpleStringProperty(company.getClickedClient().getEMail());
-        dateOfBirthProperty = new SimpleObjectProperty<>(company.getClickedClient().getDateOfBirth());
+        this.company = company;
+        nameProperty = new SimpleStringProperty(this.company.getClickedClient().getName());
+        addressProperty = new SimpleStringProperty(this.company.getClickedClient().getAddress());
+        phoneProperty = new SimpleStringProperty(this.company.getClickedClient().getPhoneNumber());
+        eMailProperty = new SimpleStringProperty(this.company.getClickedClient().getEMail());
+        dateOfBirthProperty = new SimpleObjectProperty<>(this.company.getClickedClient().getDateOfBirth());
     }
 
 
@@ -154,19 +154,22 @@ public class ClientController implements Initializable {
         else {
             String name = nameField.getText();
             LocalDate date = dateOfBirthPicker.getValue();
+            System.out.println(date.getYear() + " " + date.getMonthValue() + " " + date.getDayOfMonth());
             String address = addressField.getText();
             String phone = phoneField.getText();
             String eMail = eMailField.getText();
             Client newClient = new Client(name, date, address, phone, eMail, null);
             //companyModel.changeClient(companyModel.getClickedClient(), newClient);
             newClient.setId(company.getClickedClient().getId());
+            System.out.println("IZ CLIENT CONTROLLERA; ID JE " + newClient.getId());
+            newClient.setContractList(company.getClickedClient().getContractList());
             dao.executeChangeClient(newClient);
             Alert alert = new Alert(Alert.AlertType.INFORMATION);
             alert.setTitle(bundle.getString("success"));
             alert.setHeaderText(null);
             alert.setContentText(bundle.getString("clientChanged"));
             alert.showAndWait();
-            cancelClicked();
+           // cancelClicked();
         }
     }
 

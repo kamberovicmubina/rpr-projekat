@@ -11,6 +11,7 @@ import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.stage.Stage;
 
+import java.io.File;
 import java.time.LocalDate;
 import java.util.Locale;
 import java.util.ResourceBundle;
@@ -51,9 +52,14 @@ public class Main extends Application {
         primaryStage.setResizable(false);
         primaryStage.setScene(new Scene(root, USE_COMPUTED_SIZE, USE_COMPUTED_SIZE));
         primaryStage.show();
+     //   regenerateFile();
     }
 
-
+    void regenerateFile() {
+        DatabaseDAO.removeInstance();
+        File dbfile = new File("database.db");
+        dbfile.delete();
+    }
     public static void main(String[] args) {
         launch(args);
         DatabaseDAO.removeInstance();

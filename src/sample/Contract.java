@@ -8,6 +8,15 @@ public class Contract {
     private Person person;
     private LocalDate signDate;
     private LocalDate endDate;
+    private int id;
+
+    public int getId() {
+        return id;
+    }
+
+    public void setId(int id) {
+        this.id = id;
+    }
 
     public Contract(String title, Person person, LocalDate signDate, LocalDate endDate) {
         titleOfContract = title;

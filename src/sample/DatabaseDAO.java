@@ -14,7 +14,8 @@ import java.util.Scanner;
 public class DatabaseDAO {
     private static DatabaseDAO instance;
     private Connection connection;
-    private PreparedStatement getCompanyQuery, getClientsQuery, getClientContractsQuery, getOneClientQuery, getOnePersonQuery, insertCompanyQuery;
+    private PreparedStatement getCompanyQuery, getClientsQuery, getClientContractsQuery, getOneClientQuery, getOnePersonQuery, insertCompanyQuery,
+                                insertClientQuery;
     private ObservableList<Client> clients = FXCollections.observableArrayList();
 
     public static DatabaseDAO getInstance() {
@@ -268,6 +269,7 @@ public class DatabaseDAO {
             insertCompanyQuery.setString(6, getStringFromClients(company.getClients()));
             insertCompanyQuery.setString(7, getStringFromServices(company.getServices()));
             insertCompanyQuery.setInt(8, company.getOwner().getId());
+            insertCompanyQuery.executeUpdate();
         } catch (SQLException e) {
             e.printStackTrace();
         }
@@ -310,11 +312,45 @@ public class DatabaseDAO {
         return deps;
     }
 
-   /* public void setAddClientQuery () {
+    public void executeInsertClient (Client client) {
         try {
-            addClientQuery = connection.prepareStatement("INSERT INTO client VALUES ()");
+            insertClientQuery = connection.prepareStatement("INSERT INTO client VALUES (?,?,?,?,?,?,?,?)");
+            PreparedStatement helpStatement = connection.prepareStatement("SELECT id FROM client ORDER BY id DESC");
+            ResultSet result = helpStatement.executeQuery();
+            int idClient = 0;
+            while (result.next()) {
+                result.getInt(8);
+                idClient++;
+            }
+            idClient++;
+            insertClientQuery.setString(1, client.getName());
+            insertClientQuery.setString(2, getStringFromLocalDate(client.getDateOfBirth()));
+            insertClientQuery.setString(3, client.getAddress());
+            insertClientQuery.setString(4, client.getPhoneNumber());
+            insertClientQuery.setString(5, client.getEMail());
+            insertClientQuery.setString(6, getStringFromContracts(client.getContractList()));
+            insertClientQuery.setDouble(7, client.getProfit());
+            insertClientQuery.setInt(8, idClient);
+            insertClientQuery.executeUpdate();
         } catch (SQLException e) {
             e.printStackTrace();
         }
-    }*/
+    }
+
+    private String getStringFromContracts(ObservableList<Contract> contractList) {
+        String contracts = "";
+        for (int i = 0; i < contractList.size(); i++) {
+            contracts += contractList.get(i).getId();
+            if (i != contractList.size()-1) contracts += " ";
+        }
+        return contracts;
+    }
+
+    private String getStringFromLocalDate(LocalDate dateOfBirth) {
+        String date = "";
+        date += String.valueOf(dateOfBirth.getYear()) + " " + String.valueOf(dateOfBirth.getMonth()) + " " + String.valueOf(dateOfBirth.getDayOfMonth());
+        return date;
+    }
+
+
 }

@@ -217,7 +217,8 @@ public class DatabaseDAO {
                 LocalDate endLocal = getLocalDateFromString(endDate);
                 Person person = executeGetOneClient(idClient);
                 Contract contract = new Contract(title, person, signLocal, endLocal);
-                contract.setId(getNextAvailableContractId());
+                int idContract = rs.getInt(2);
+                contract.setId(idContract);
                 contracts.add(contract);
                 ((Client) person).setContractList(contracts);
                 contract.setPerson(person);

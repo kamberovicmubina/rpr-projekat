@@ -28,11 +28,9 @@ public class ContractsController implements Initializable {
     public TableColumn<Contract, String> Title;
     public TableColumn<Contract, LocalDate> DateFrom;
     public TableColumn<Contract, LocalDate> DateTo;
-   // private Company companyModel;
     private DatabaseDAO dao;
     private Company company;
     private ResourceBundle bundle;
-    private boolean contractSelected = false;
     private ObservableList<Contract> clientContracts = FXCollections.observableArrayList();
 
     public ContractsController (DatabaseDAO databaseDAO, Company company) {
@@ -42,30 +40,20 @@ public class ContractsController implements Initializable {
 
     @Override
     public void initialize(URL url, ResourceBundle resourceBundle) {
+        bundle = resourceBundle;
         Title.setCellValueFactory(new PropertyValueFactory<>("titleOfContract"));
         DateFrom.setCellValueFactory(new PropertyValueFactory<>("signDate"));
         DateTo.setCellValueFactory(new PropertyValueFactory<>("endDate"));
        // contractTableView.setItems(companyModel.getClickedClient().getContractList());
         clientContracts.addAll(dao.executeGetClientContractsQuery(company.getClickedClient().getId()));
         contractTableView.setItems(clientContracts);
-        bundle = resourceBundle;
-
         contractTableView.setOnMouseClicked(new EventHandler<MouseEvent>() {
             @Override
             public void handle(MouseEvent mouseEvent) {
-                contractSelected = true;
+               // contractSelected = true;
                 company.setClickedContract(contractTableView.getSelectionModel().getSelectedItem());
             }
         });
-
-        contractTableView.setOnMouseReleased(new EventHandler<MouseEvent>() {
-            @Override
-            public void handle(MouseEvent mouseEvent) {
-                contractSelected = false;
-                company.setClickedContract(null);
-            }
-        });
-
     }
 
     public void onAddContract () {
@@ -93,7 +81,7 @@ public class ContractsController implements Initializable {
     }
 
     public void onDeleteContract () {
-        if (contractSelected) {
+        if (company.getClickedContract() != null) {
             Alert alert = new Alert(Alert.AlertType.INFORMATION, bundle.getString("alertContractDelete"), ButtonType.YES, ButtonType.NO);
             alert.setTitle(bundle.getString("warning"));
             alert.setHeaderText(null);

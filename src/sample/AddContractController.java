@@ -17,7 +17,6 @@ public class AddContractController implements Initializable {
     public DatePicker toPicker;
     public Button saveBtn;
     public Button cancelBtn;
-  //  private Company companyModel;
     private DatabaseDAO dao;
     private Company company;
     private ResourceBundle bundle;
@@ -36,13 +35,12 @@ public class AddContractController implements Initializable {
         if (FieldsValidation.validDate(fromPicker.getValue()) && FieldsValidation.dateInFuture(toPicker.getValue())) {
             Contract newContract = new Contract(titleField.getText(), company.getClickedClient(), fromPicker.getValue(), toPicker.getValue());
             newContract.setId(dao.getNextAvailableContractId());
-          //  companyModel.getClickedClient().getContractList().add(newContract);
             dao.executeInsertContract(newContract);
             Alert newAlert = new Alert(Alert.AlertType.CONFIRMATION, bundle.getString("contractAdded"));
             newAlert.setTitle(bundle.getString("success"));
             newAlert.setHeaderText(null);
             newAlert.show();
-            onCancel();
+          //  onCancel();
         } else {
             Alert alert = new Alert(Alert.AlertType.INFORMATION);
             alert.setTitle(bundle.getString("error"));

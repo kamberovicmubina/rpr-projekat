@@ -20,7 +20,7 @@
    <children>
       <VBox prefHeight="200.0" prefWidth="100.0" GridPane.columnIndex="1">
          <children>
-            <Label text="Ukupan broj klijenata" />
+            <Label text="%totalNumber" />
             <TextField fx:id="numberTextField" editable="false" />
          </children>
       </VBox>

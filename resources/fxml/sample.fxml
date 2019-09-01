@@ -62,10 +62,6 @@
                <tooltip>
                   <Tooltip text="%clientNumberStatistic" />
                </tooltip></Button>
-            <Button mnemonicParsing="false" prefWidth="100.0" text="%departmentStatistic">
-               <tooltip>
-                  <Tooltip text="%departmentStatistic" />
-               </tooltip></Button>
          </children>
       </VBox>
    </right>

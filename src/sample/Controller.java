@@ -1,24 +1,18 @@
 package sample;
 
-import javafx.beans.property.DoubleProperty;
-import javafx.beans.property.SimpleDoubleProperty;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
-import javafx.event.EventHandler;
 import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.*;
-import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.Region;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
-import javafx.stage.WindowEvent;
 import net.sf.jasperreports.engine.JRException;
-
 import java.io.IOException;
 import java.net.URL;
 import java.util.Locale;
@@ -28,23 +22,12 @@ import java.util.ResourceBundle;
 public class Controller implements Initializable {
     public ListView<Client> clientList;
     public ListView<String> servicesList;
-    public MenuItem addClient;
-    public MenuItem deleteClient;
-    public MenuItem changeClient;
-    public Button addClientButton;
-    public Button addServiceBtn;
-    public Button deleteServiceBtn;
-    public MenuItem bosnianOption;
-    public MenuItem englishOption;
-    public Button profitButton;
-    public Button clientNumberBtn;
     public BorderPane borderPane;
     private ResourceBundle bundle;
     private DatabaseDAO dao;
     private Company company;
     private ObservableList<String> servicesObservableList = FXCollections.observableArrayList();
     private ObservableList<Client> clientsObservableList = FXCollections.observableArrayList();
-
 
     public Controller (DatabaseDAO databaseDAO) {
         dao = databaseDAO;
@@ -56,7 +39,6 @@ public class Controller implements Initializable {
         bundle = resourceBundle;
         clientsObservableList.addAll(dao.executeGetClientsQuery());
         clientList.setItems(clientsObservableList);
-
         clientList.setOnMouseClicked(mouseEvent -> {
             company.setClickedClient(clientList.getSelectionModel().getSelectedItem());
             if (mouseEvent.getClickCount() == 2) {
@@ -69,8 +51,6 @@ public class Controller implements Initializable {
         });
         servicesObservableList.addAll(dao.executeGetServices());
         servicesList.setItems(servicesObservableList);
-
-
     }
 
     public void onAdd() {
@@ -83,12 +63,7 @@ public class Controller implements Initializable {
             e.printStackTrace();
         }
         if (root != null) {
-            Stage secondaryStage = new Stage();
-            secondaryStage.setTitle(bundle.getString("newClient"));
-            secondaryStage.setResizable(false);
-            secondaryStage.setScene(new Scene(root, Region.USE_COMPUTED_SIZE, Region.USE_COMPUTED_SIZE));
-            secondaryStage.initModality(Modality.APPLICATION_MODAL);
-            secondaryStage.show();
+            Stage secondaryStage = setSecondaryStage(root, bundle.getString("newClient"));
             secondaryStage.setOnCloseRequest(windowEvent -> {
                 clientsObservableList.clear();
                 clientsObservableList.addAll(dao.executeGetClientsQuery());
@@ -105,12 +80,8 @@ public class Controller implements Initializable {
                 alert.setHeaderText(null);
                 Optional<ButtonType> option = alert.showAndWait();
                 if (option.get() == ButtonType.YES) {
-                    //companyModel.removeClient();
                     dao.executeDeleteClient(company.getClickedClient().getId());
-                    Alert newAlert = new Alert(Alert.AlertType.CONFIRMATION, bundle.getString("clientDeleted"));
-                    newAlert.setTitle(bundle.getString("success"));
-                    newAlert.setHeaderText(null);
-                    newAlert.show();
+                    Alert newAlert = newAlertSuccess(bundle.getString("clientDeleted"));
                     newAlert.setOnCloseRequest(dialogEvent -> {
                         clientsObservableList.clear();
                         clientsObservableList.addAll(dao.executeGetClientsQuery());
@@ -121,10 +92,7 @@ public class Controller implements Initializable {
                 throw new ObjectNotSelectedException(bundle.getString("clientNotSelected"));
             }
         } catch (ObjectNotSelectedException o) {
-            Alert alert = new Alert(Alert.AlertType.INFORMATION, o.getMessage());
-            alert.setTitle(bundle.getString("error"));
-            alert.setHeaderText(null);
-            alert.showAndWait();
+            newAlertError(o);
         }
     }
 
@@ -140,12 +108,7 @@ public class Controller implements Initializable {
                     e.printStackTrace();
                 }
                 if (root != null) {
-                    Stage secondaryStage = new Stage();
-                    secondaryStage.setTitle(company.getClickedClient().getName());
-                    secondaryStage.setResizable(false);
-                    secondaryStage.setScene(new Scene(root, Region.USE_COMPUTED_SIZE, Region.USE_COMPUTED_SIZE));
-                    secondaryStage.initModality(Modality.APPLICATION_MODAL);
-                    secondaryStage.show();
+                    Stage secondaryStage = setSecondaryStage(root, company.getClickedClient().getName());
                     secondaryStage.setOnCloseRequest(windowEvent -> {
                         clientsObservableList.clear();
                         clientsObservableList.addAll(dao.executeGetClientsQuery());
@@ -154,13 +117,9 @@ public class Controller implements Initializable {
                 }
             } else {
                 throw new ObjectNotSelectedException(bundle.getString("clientChangeNotSelected"));
-
             }
         } catch (ObjectNotSelectedException o) {
-            Alert alert = new Alert(Alert.AlertType.INFORMATION, o.getMessage());
-            alert.setTitle(bundle.getString("error"));
-            alert.setHeaderText(null);
-            alert.showAndWait();
+            newAlertError(o);
         }
     }
 
@@ -174,12 +133,7 @@ public class Controller implements Initializable {
             e.printStackTrace();
         }
         if (root != null) {
-            Stage secondaryStage = new Stage();
-            secondaryStage.setTitle(bundle.getString("newService"));
-            secondaryStage.setResizable(false);
-            secondaryStage.setScene(new Scene(root, Region.USE_COMPUTED_SIZE, Region.USE_COMPUTED_SIZE));
-            secondaryStage.initModality(Modality.APPLICATION_MODAL);
-            secondaryStage.show();
+            Stage secondaryStage = setSecondaryStage(root, bundle.getString("newService"));
             secondaryStage.setOnCloseRequest(windowEvent -> {
                 servicesObservableList.clear();
                 servicesObservableList.addAll(dao.executeGetServices());
@@ -197,23 +151,16 @@ public class Controller implements Initializable {
                 alert.setHeaderText(null);
                 Optional<ButtonType> option = alert.showAndWait();
                 if (option.get() == ButtonType.YES) {
-                   // companyModel.getServices().remove(service);
                     dao.executeDeleteService(service);
                     servicesObservableList.clear();
                     servicesObservableList.addAll(dao.executeGetServices());
-                    Alert newAlert = new Alert(Alert.AlertType.CONFIRMATION, bundle.getString("serviceDeleted"));
-                    newAlert.setTitle(bundle.getString("success"));
-                    newAlert.setHeaderText(null);
-                    newAlert.show();
+                    newAlertSuccess(bundle.getString("serviceDeleted"));
                 }
             } else {
                 throw new ObjectNotSelectedException(bundle.getString("serviceNotSelected"));
             }
         } catch (ObjectNotSelectedException o) {
-            Alert alert = new Alert(Alert.AlertType.INFORMATION, o.getMessage());
-            alert.setTitle(bundle.getString("error"));
-            alert.setHeaderText(null);
-            alert.showAndWait();
+            newAlertError(o);
         }
     }
 
@@ -258,13 +205,33 @@ public class Controller implements Initializable {
             e.printStackTrace();
         }
         if (root != null) {
-            Stage secondaryStage = new Stage();
-            secondaryStage.setTitle(bundle.getString("numberStat"));
-            secondaryStage.setResizable(false);
-            secondaryStage.setScene(new Scene(root, Region.USE_COMPUTED_SIZE, Region.USE_COMPUTED_SIZE));
-            secondaryStage.initModality(Modality.APPLICATION_MODAL);
-            secondaryStage.show();
+            Stage secondaryStage = setSecondaryStage(root, bundle.getString("numberStat"));
         }
+    }
+
+    private void newAlertError (ObjectNotSelectedException o) {
+        Alert alert = new Alert(Alert.AlertType.INFORMATION, o.getMessage());
+        alert.setTitle(bundle.getString("error"));
+        alert.setHeaderText(null);
+        alert.showAndWait();
+    }
+
+    private Alert newAlertSuccess (String text) {
+        Alert newAlert = new Alert(Alert.AlertType.CONFIRMATION, text);
+        newAlert.setTitle(bundle.getString("success"));
+        newAlert.setHeaderText(null);
+        newAlert.show();
+        return newAlert;
+    }
+
+    private Stage setSecondaryStage (Parent root, String title) {
+        Stage secondaryStage = new Stage();
+        secondaryStage.setTitle(title);
+        secondaryStage.setResizable(false);
+        secondaryStage.setScene(new Scene(root, Region.USE_COMPUTED_SIZE, Region.USE_COMPUTED_SIZE));
+        secondaryStage.initModality(Modality.APPLICATION_MODAL);
+        secondaryStage.show();
+        return secondaryStage;
     }
 
 }

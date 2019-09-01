@@ -47,6 +47,4 @@ public class FieldsValidation {
         LocalDate now = LocalDate.now();
         return n != null && n.isAfter(now);
     }
-
-
 }

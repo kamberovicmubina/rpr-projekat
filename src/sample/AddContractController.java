@@ -6,16 +6,13 @@ import javafx.scene.control.Button;
 import javafx.scene.control.DatePicker;
 import javafx.scene.control.TextField;
 import javafx.stage.Stage;
-
 import java.net.URL;
-import java.time.LocalDate;
 import java.util.ResourceBundle;
 
 public class AddContractController implements Initializable {
     public TextField titleField;
     public DatePicker fromPicker;
     public DatePicker toPicker;
-    public Button saveBtn;
     public Button cancelBtn;
     private DatabaseDAO dao;
     private Company company;
@@ -40,7 +37,6 @@ public class AddContractController implements Initializable {
             newAlert.setTitle(bundle.getString("success"));
             newAlert.setHeaderText(null);
             newAlert.show();
-          //  onCancel();
         } else {
             Alert alert = new Alert(Alert.AlertType.INFORMATION);
             alert.setTitle(bundle.getString("error"));

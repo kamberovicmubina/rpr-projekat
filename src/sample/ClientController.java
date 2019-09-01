@@ -1,8 +1,6 @@
 package sample;
 
 import javafx.beans.property.*;
-import javafx.event.ActionEvent;
-import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
 import javafx.scene.Parent;
@@ -11,16 +9,11 @@ import javafx.scene.control.*;
 import javafx.scene.layout.Region;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
-
-
 import java.io.IOException;
 import java.net.URL;
-import java.text.SimpleDateFormat;
 import java.time.LocalDate;
 import java.util.Optional;
 import java.util.ResourceBundle;
-
-import static javafx.scene.layout.Region.USE_COMPUTED_SIZE;
 
 public class ClientController implements Initializable {
     public TextField nameField;
@@ -28,20 +21,13 @@ public class ClientController implements Initializable {
     public TextField addressField;
     public TextField phoneField;
     public TextField eMailField;
-    public Button saveButton;
     public Button cancelButton;
-    public Button deleteButton;
-    public Hyperlink contractsHyperlink;
-   // public TextField profitText;
-   // public Button addProfitBtn;
     public Spinner<Double> profitSpinner;
     private SimpleStringProperty nameProperty;
     private SimpleStringProperty addressProperty;
     private SimpleStringProperty phoneProperty;
     private SimpleStringProperty eMailProperty;
     private ObjectProperty<LocalDate> dateOfBirthProperty;
-  //  private SimpleStringProperty profitProperty;
-   // private Company companyModel;
     private DatabaseDAO dao;
     private Company company;
     private boolean nameValid = true;
@@ -59,7 +45,6 @@ public class ClientController implements Initializable {
         phoneProperty = new SimpleStringProperty(this.company.getClickedClient().getPhoneNumber());
         eMailProperty = new SimpleStringProperty(this.company.getClickedClient().getEMail());
         dateOfBirthProperty = new SimpleObjectProperty<>(this.company.getClickedClient().getDateOfBirth());
-      //  profitProperty = new SimpleStringProperty(String.valueOf(this.company.getClickedClient().getProfit()));
     }
 
 
@@ -72,14 +57,12 @@ public class ClientController implements Initializable {
         phoneField.textProperty().bindBidirectional(phoneProperty);
         eMailField.textProperty().bindBidirectional(eMailProperty);
         dateOfBirthPicker.valueProperty().bindBidirectional(dateOfBirthProperty);
-      //  profitText.textProperty().bindBidirectional(profitProperty);
 
         nameField.setText(company.getClickedClient().getName());
         addressField.setText(company.getClickedClient().getAddress());
         phoneField.setText(company.getClickedClient().getPhoneNumber());
         eMailField.setText(company.getClickedClient().getEMail());
         dateOfBirthPicker.setValue(company.getClickedClient().getDateOfBirth());
-      //  profitText.setText(String.valueOf(company.getClickedClient().getProfit()));
 
         SpinnerValueFactory<Double> valueFactory = new SpinnerValueFactory.DoubleSpinnerValueFactory(1, 10000000);
         profitSpinner.setValueFactory(valueFactory);
@@ -88,48 +71,40 @@ public class ClientController implements Initializable {
         // validation of fields in case they are changed
         nameField.textProperty().addListener((observableValue, o, n) -> {
             if (FieldsValidation.validName(n)) {
-                nameField.getStyleClass().removeAll("fieldIncorrect");
-                nameField.getStyleClass().add("fieldCorrect");
+                setCorrect(nameField);
                 nameValid = true;
             } else {
-                nameField.getStyleClass().removeAll("fieldCorrect");
-                nameField.getStyleClass().add("fieldIncorrect");
+                setIncorrect(nameField);
                 nameValid = false;
             }
         });
 
         addressField.textProperty().addListener((observableValue, o, n) -> {
             if (FieldsValidation.validAddress(n)) {
-                addressField.getStyleClass().removeAll("fieldIncorrect");
-                addressField.getStyleClass().add("fieldCorrect");
+                setCorrect(addressField);
                 addressValid = true;
             } else {
-                addressField.getStyleClass().removeAll("fieldCorrect");
-                addressField.getStyleClass().add("fieldIncorrect");
+                setIncorrect(addressField);
                 addressValid = false;
             }
         });
 
         phoneField.textProperty().addListener((observableValue, o, n) -> {
             if (FieldsValidation.validPhone(n)) {
-                phoneField.getStyleClass().removeAll("fieldIncorrect");
-                phoneField.getStyleClass().add("fieldCorrect");
+                setCorrect(phoneField);
                 phoneValid = true;
             } else {
-                phoneField.getStyleClass().removeAll("fieldCorrect");
-                phoneField.getStyleClass().add("fieldIncorrect");
+                setIncorrect(phoneField);
                 phoneValid = false;
             }
         });
 
         eMailField.textProperty().addListener((observableValue, o, n) -> {
             if (FieldsValidation.validEMail(n)) {
-                eMailField.getStyleClass().removeAll("fieldIncorrect");
-                eMailField.getStyleClass().add("fieldCorrect");
+                setCorrect(eMailField);
                 eMailValid = true;
             } else {
-                eMailField.getStyleClass().removeAll("fieldCorrect");
-                eMailField.getStyleClass().add("fieldIncorrect");
+                setIncorrect(eMailField);
                 eMailValid = false;
             }
         });
@@ -168,10 +143,8 @@ public class ClientController implements Initializable {
             String phone = phoneField.getText();
             String eMail = eMailField.getText();
             Client newClient = new Client(name, date, address, phone, eMail, null);
-            //companyModel.changeClient(companyModel.getClickedClient(), newClient);
             newClient.setId(company.getClickedClient().getId());
             newClient.setProfit(profitSpinner.getValue());
-            System.out.println("IZ CLIENT CONTROLLERA; ID JE " + newClient.getId());
             newClient.setContractList(company.getClickedClient().getContractList());
             dao.executeChangeClient(newClient);
             Alert alert = new Alert(Alert.AlertType.INFORMATION);
@@ -179,7 +152,6 @@ public class ClientController implements Initializable {
             alert.setHeaderText(null);
             alert.setContentText(bundle.getString("clientChanged"));
             alert.showAndWait();
-           // cancelClicked();
         }
     }
 
@@ -194,7 +166,6 @@ public class ClientController implements Initializable {
         alert.setHeaderText(null);
         Optional<ButtonType> option = alert.showAndWait();
         if (option.get() == ButtonType.YES) {
-          //  companyModel.removeClient();
             dao.executeDeleteClient(company.getClickedClient().getId());
             Alert newAlert = new Alert(Alert.AlertType.CONFIRMATION, bundle.getString("clientDeleted"));
             newAlert.setTitle(bundle.getString("success"));
@@ -222,5 +193,15 @@ public class ClientController implements Initializable {
             secondaryStage.initModality(Modality.APPLICATION_MODAL);
             secondaryStage.show();
         }
+    }
+
+    private void setCorrect (TextField field) {
+        field.getStyleClass().removeAll("fieldIncorrect");
+        field.getStyleClass().add("fieldCorrect");
+    }
+
+    private static void setIncorrect (TextField field) {
+        field.getStyleClass().removeAll("fieldCorrect");
+        field.getStyleClass().add("fieldIncorrect");
     }
 }

@@ -39,7 +39,6 @@ public class DatabaseDAO {
                 e1.printStackTrace();
             }
         }
-
     }
 
     public Connection getConnection() {
@@ -150,9 +149,7 @@ public class DatabaseDAO {
             while (rs.next()) {
                 String name = rs.getString(1);
                 String dateOfBirth = rs.getString(2);
-            //    System.out.println("IZ DATABASEDAO STRING" + dateOfBirth);
                 LocalDate dateLocal = getLocalDateFromString (dateOfBirth);
-          //      System.out.println("IZ DATABASEDAO " + dateLocal);
                 String address = rs.getString(3);
                 String phone = rs.getString(4);
                 String eMail = rs.getString(5);
@@ -171,38 +168,30 @@ public class DatabaseDAO {
 
     private LocalDate getLocalDateFromString(String dateOfBirth) {
         if (dateOfBirth.length() == 0) {
-            System.out.println("PRAZAN STRING");
             return null;
         }
-        //string has to be in following format in order for this function to work: "YYYY MM DD"
+        //string has to be in one of the following formats in order for this function to work
         int year = Integer.parseInt(dateOfBirth.substring(0, 4));
         if (dateOfBirth.matches("^\\d\\d\\d\\d \\d\\d \\d\\d$") ) {
             int month = Integer.parseInt(dateOfBirth.substring(5, 7));
             int day = Integer.parseInt(dateOfBirth.substring(8, 10));
-         //   System.out.println("Godina" + year + ", mjesec " + month + ", dan " + day);
             LocalDate localDate = LocalDate.of(year, month, day);
             return localDate;
         } else if (dateOfBirth.matches("^\\d\\d\\d\\d \\d \\d\\d$")) {
             int month = Integer.parseInt(dateOfBirth.substring(5, 6));
             int day = Integer.parseInt(dateOfBirth.substring(7, 9));
-          //  System.out.println("Godina" + year + ", mjesec " + month + ", dan " + day);
             LocalDate localDate = LocalDate.of(year, month, day);
             return localDate;
         } else if (dateOfBirth.matches("^\\d\\d\\d\\d \\d \\d$")) {
             int month = Integer.parseInt(dateOfBirth.substring(5, 6));
             int day = Integer.parseInt(dateOfBirth.substring(7, 8));
-         //   System.out.println("Godina" + year + ", mjesec " + month + ", dan " + day);
             LocalDate localDate = LocalDate.of(year, month, day);
             return localDate;
         } else if (dateOfBirth.matches("^\\d\\d\\d\\d \\d\\d \\d$")) {
             int month = Integer.parseInt(dateOfBirth.substring(5, 7));
             int day = Integer.parseInt(dateOfBirth.substring(8, 9));
-         //   System.out.println("Godina" + year + ", mjesec " + month + ", dan " + day);
             LocalDate localDate = LocalDate.of(year, month, day);
             return localDate;
-        } else {
-            System.out.println("NE VALJA OPET");
-            System.out.println("ovo je string" + dateOfBirth);
         }
         return null;
     }
@@ -250,6 +239,7 @@ public class DatabaseDAO {
                 String phone = rs.getString(4);
                 String eMail = rs.getString(5);
                 double profit = rs.getDouble(7);
+
                 client = new Client(name, dateLocal, address, phone, eMail, null, profit);
                 return client;
             }
@@ -265,8 +255,6 @@ public class DatabaseDAO {
             getOnePersonQuery = connection.prepareStatement("SELECT * FROM person WHERE id=?");
             getOnePersonQuery.setInt(1, idPerson);
             ResultSet rs = getOnePersonQuery.executeQuery();
-            // one row will be returned
-            //just in case
             while (rs.next()) {
                 String name = rs.getString(2);
                 String dateOfBirth = rs.getString(3);
@@ -289,12 +277,7 @@ public class DatabaseDAO {
             insertCompanyQuery = connection.prepareStatement("INSERT INTO company VALUES(?,?,?,?,?,?,?,?)");
             PreparedStatement helpStatement = connection.prepareStatement("SELECT id FROM company ORDER BY id DESC");
             ResultSet result = helpStatement.executeQuery();
-            int idCompany = 0;
-            while (result.next()) {
-                result.getInt(1);
-                idCompany++;
-            }
-            idCompany++;
+            int idCompany = getNextIdFromResultSet(result);
             insertCompanyQuery.setString(1, company.getName());
             insertCompanyQuery.setInt(2, idCompany);
             insertCompanyQuery.setString(3, company.getAddress());
@@ -351,12 +334,7 @@ public class DatabaseDAO {
         try {
             helpStatement = connection.prepareStatement("SELECT id FROM client ORDER BY id DESC");
             ResultSet result = helpStatement.executeQuery();
-            int idClient = 0;
-            while (result.next()) {
-                result.getInt(1);
-                idClient++;
-            }
-            idClient++;
+            int idClient = getNextIdFromResultSet(result);
             return idClient;
         } catch (SQLException e) {
             e.printStackTrace();
@@ -364,11 +342,23 @@ public class DatabaseDAO {
         return 0;
     }
 
+    private int getNextIdFromResultSet (ResultSet result) {
+        int id = 0;
+        try {
+            while (result.next()) {
+                result.getInt(1);
+                id++;
+            }
+            id++;
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return id;
+    }
+
     public void executeInsertClient (Client client) {
         try {
             insertClientQuery = connection.prepareStatement("INSERT INTO client VALUES (?,?,?,?,?,?,?,?)");
-           /* int idClient = getNextAvailableClientId();
-            client.setId(idClient);*/
             insertClientQuery.setString(1, client.getName());
             insertClientQuery.setString(2, getStringFromLocalDate(client.getDateOfBirth()));
             insertClientQuery.setString(3, client.getAddress());
@@ -422,11 +412,8 @@ public class DatabaseDAO {
     }
 
     public void executeInsertContract (Contract contract) {
-      //  int idContract = 0;
         try {
             insertContractQuery = connection.prepareStatement("INSERT INTO contract VALUES (?,?,?,?,?)");
-          //  contract.setId(idContract);
-            System.out.println("IZ DATABASEDAO ID UGOVORA DODANOG JE " + contract.getId());
             insertContractQuery.setString(1, contract.getTitleOfContract());
             insertContractQuery.setInt(2, contract.getId());
             insertContractQuery.setInt(3, contract.getPerson().getId());
@@ -470,20 +457,13 @@ public class DatabaseDAO {
             e.printStackTrace();
         }
 
-        System.out.println("IZ DATABASEDAO NAKON DODVANJA UGOVORA ID JE " + contract.getId());
-
     }
     public int getNextAvailableContractId () {
         PreparedStatement helpStatement = null;
         try {
-            int idContract = 0;
             helpStatement = connection.prepareStatement("SELECT id FROM contract ORDER BY id DESC");
             ResultSet result = helpStatement.executeQuery();
-            while (result.next()) {
-                result.getInt(1);
-                idContract++;
-            }
-            idContract++;
+            int idContract = getNextIdFromResultSet(result);
             return idContract;
         } catch (SQLException e) {
             e.printStackTrace();
@@ -496,12 +476,7 @@ public class DatabaseDAO {
             insertPersonQuery = connection.prepareStatement("INSERT INTO person VALUES(?,?,?,?,?,?)");
             PreparedStatement helpStatement = connection.prepareStatement("SELECT id FROM person ORDER BY id DESC");
             ResultSet result = helpStatement.executeQuery();
-            int idPerson = 0;
-            while (result.next()) {
-                result.getInt(1);
-                idPerson++;
-            }
-            idPerson++;
+            int idPerson = getNextIdFromResultSet(result);
             person.setId(idPerson);
             insertPersonQuery.setInt(1, idPerson);
             insertPersonQuery.setString(2, person.getName());
@@ -541,8 +516,6 @@ public class DatabaseDAO {
         }
 
     }
-
-
 
     private String deleteIdFromString(String string, int id) {
         String idString = "";

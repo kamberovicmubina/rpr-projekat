@@ -14,7 +14,6 @@ public class NewClientController implements Initializable {
     public TextField phoneField;
     public TextField eMailField;
     public DatePicker dateField;
-    public Button saveButton;
     public Button cancelButton;
     private boolean nameValid = false;
     private boolean addressValid = false;
@@ -34,48 +33,40 @@ public class NewClientController implements Initializable {
 
         nameField.textProperty().addListener((observableValue, o, n) -> {
             if (FieldsValidation.validName(n)) {
-                nameField.getStyleClass().removeAll("fieldIncorrect");
-                nameField.getStyleClass().add("fieldCorrect");
+                setCorrect(nameField);
                 nameValid = true;
             } else {
-                nameField.getStyleClass().removeAll("fieldCorrect");
-                nameField.getStyleClass().add("fieldIncorrect");
+                setIncorrect(nameField);
                 nameValid = false;
             }
         });
 
         addressField.textProperty().addListener((observableValue, o, n) -> {
             if (FieldsValidation.validAddress(n)) {
-                addressField.getStyleClass().removeAll("fieldIncorrect");
-                addressField.getStyleClass().add("fieldCorrect");
+                setCorrect(addressField);
                 addressValid = true;
             } else {
-                addressField.getStyleClass().removeAll("fieldCorrect");
-                addressField.getStyleClass().add("fieldIncorrect");
+                setIncorrect(addressField);
                 addressValid = false;
             }
         });
 
         phoneField.textProperty().addListener((observableValue, o, n) -> {
             if (FieldsValidation.validPhone(n)) {
-                phoneField.getStyleClass().removeAll("fieldIncorrect");
-                phoneField.getStyleClass().add("fieldCorrect");
+                setCorrect(phoneField);
                 phoneValid = true;
             } else {
-                phoneField.getStyleClass().removeAll("fieldCorrect");
-                phoneField.getStyleClass().add("fieldIncorrect");
+                setIncorrect(phoneField);
                 phoneValid = false;
             }
         });
 
         eMailField.textProperty().addListener((observableValue, o, n) -> {
             if (FieldsValidation.validEMail(n)) {
-                eMailField.getStyleClass().removeAll("fieldIncorrect");
-                eMailField.getStyleClass().add("fieldCorrect");
+                setCorrect(eMailField);
                 eMailValid = true;
             } else {
-                eMailField.getStyleClass().removeAll("fieldCorrect");
-                eMailField.getStyleClass().add("fieldIncorrect");
+                setIncorrect(eMailField);
                 eMailValid = false;
             }
         });
@@ -91,8 +82,6 @@ public class NewClientController implements Initializable {
                 dateValid = false;
             }
         });
-
-
     }
 
     public boolean dataValid () {
@@ -115,21 +104,28 @@ public class NewClientController implements Initializable {
             String eMail = eMailField.getText();
             Client newClient = new Client(name, date, address, phone, eMail, null);
             newClient.setId(dao.getNextAvailableClientId());
-            //Company.addClient(newClient);
             dao.executeInsertClient(newClient);
             Alert alert = new Alert(Alert.AlertType.INFORMATION);
             alert.setTitle(bundle.getString("success"));
             alert.setHeaderText(null);
             alert.setContentText(bundle.getString("clientAdded"));
             alert.show();
-           /* Stage stage = (Stage) saveButton.getScene().getWindow();
-            stage.close();*/
         }
     }
 
     public void cancelClicked (ActionEvent actionEvent) {
         Stage stage = (Stage) cancelButton.getScene().getWindow();
         stage.close();
+    }
+
+    private void setCorrect (TextField field) {
+        field.getStyleClass().removeAll("fieldIncorrect");
+        field.getStyleClass().add("fieldCorrect");
+    }
+
+    private static void setIncorrect (TextField field) {
+        field.getStyleClass().removeAll("fieldCorrect");
+        field.getStyleClass().add("fieldIncorrect");
     }
 
 }

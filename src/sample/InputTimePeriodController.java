@@ -1,6 +1,5 @@
 package sample;
 
-import javafx.beans.Observable;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.fxml.FXMLLoader;
@@ -12,9 +11,6 @@ import javafx.scene.control.DatePicker;
 import javafx.scene.layout.Region;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
-import net.sf.jasperreports.engine.JRException;
-
-import java.awt.event.ActionEvent;
 import java.io.IOException;
 import java.net.URL;
 import java.time.LocalDate;
@@ -23,7 +19,6 @@ import java.util.ResourceBundle;
 public class InputTimePeriodController implements Initializable {
     public DatePicker startTime;
     public DatePicker endTime;
-    public Button statisticBtn;
     private DatabaseDAO dao;
     private ResourceBundle bundle;
 

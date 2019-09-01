@@ -1,14 +1,11 @@
 package sample;
 
-import javafx.beans.Observable;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
-
+import java.io.Serializable;
 import java.time.LocalDate;
-import java.util.Date;
-import java.util.List;
 
-public class Client extends Person {
+public class Client extends Person implements Serializable {
     ObservableList<Contract> contractList = FXCollections.observableArrayList();
     double profit;
 

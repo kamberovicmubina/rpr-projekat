@@ -5,7 +5,6 @@ import javafx.beans.property.SimpleObjectProperty;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 
-
 public class Company {
     private String name;
     private String address;
@@ -117,29 +116,4 @@ public class Company {
     public void setOwner(Person owner) {
         this.owner = owner;
     }
-
-    public static void addClient(Client newClient) {
-        clients.add(newClient);
-    }
-
-    public void removeClient() {
-        int i = 0;
-        for (Client c : getClients()) {
-            if (c.equals(clickedClient.getValue())) {
-                clients.remove(i, i+1); // we delete ith client from the list
-                clickedClient.set(null);
-                break;
-            }
-            i++;
-        }
-    }
-
-    public void changeClient(Client oldClient, Client newClient) {
-        oldClient.setName(newClient.getName());
-        oldClient.setDateOfBirth(newClient.getDateOfBirth());
-        oldClient.setAddress(newClient.getAddress());
-        oldClient.setPhoneNumber(newClient.getPhoneNumber());
-        oldClient.setEMail(newClient.getEMail());
-    }
-
 }

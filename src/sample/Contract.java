@@ -1,7 +1,6 @@
 package sample;
 
 import java.time.LocalDate;
-import java.util.Date;
 
 public class Contract {
     private String titleOfContract;
@@ -59,6 +58,5 @@ public class Contract {
     public void setEndDate(LocalDate endDate) {
         this.endDate = endDate;
     }
-
 
 }

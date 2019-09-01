@@ -32,6 +32,7 @@ public class InputTimePeriodController implements Initializable {
     }
 
     public ObservableList<Client> getClientsInPeriodOfTime (LocalDate start, LocalDate end) {
+        if (start.isAfter(end)) return null;
         ObservableList<Client> validClients = FXCollections.observableArrayList();
         ObservableList<Client> clients = dao.executeGetClientsQuery();
         for (Client c : clients) {

@@ -42,6 +42,10 @@ public class DatabaseDAO {
 
     }
 
+    public Connection getConnection() {
+        return connection;
+    }
+
     public static void removeInstance() {
         instance = null;
     }

@@ -2,6 +2,7 @@ package sample;
 
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
+import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
 import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
@@ -14,6 +15,7 @@ import javafx.scene.layout.Region;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
 import javafx.stage.WindowEvent;
+import net.sf.jasperreports.engine.JRException;
 
 import java.io.IOException;
 import java.net.URL;
@@ -32,6 +34,7 @@ public class Controller implements Initializable {
     public Button deleteServiceBtn;
     public MenuItem bosnianOption;
     public MenuItem englishOption;
+    public Button profitButton;
     public BorderPane borderPane;
     private ResourceBundle bundle;
     private DatabaseDAO dao;
@@ -229,6 +232,15 @@ public class Controller implements Initializable {
     public void onEnglish () {
         Locale.setDefault(new Locale("en", "EN"));
         reloadScene();
+    }
+
+    public void printProfit (ActionEvent actionEvent) {
+        try {
+            new ProfitReport().showReport(dao.getConnection());
+        } catch (JRException e1) {
+            e1.printStackTrace();
+        }
+
     }
 
 }

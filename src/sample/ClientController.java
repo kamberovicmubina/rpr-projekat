@@ -1,8 +1,6 @@
 package sample;
 
-import javafx.beans.property.ObjectProperty;
-import javafx.beans.property.SimpleObjectProperty;
-import javafx.beans.property.SimpleStringProperty;
+import javafx.beans.property.*;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
@@ -34,11 +32,15 @@ public class ClientController implements Initializable {
     public Button cancelButton;
     public Button deleteButton;
     public Hyperlink contractsHyperlink;
+   // public TextField profitText;
+   // public Button addProfitBtn;
+    public Spinner<Double> profitSpinner;
     private SimpleStringProperty nameProperty;
     private SimpleStringProperty addressProperty;
     private SimpleStringProperty phoneProperty;
     private SimpleStringProperty eMailProperty;
     private ObjectProperty<LocalDate> dateOfBirthProperty;
+  //  private SimpleStringProperty profitProperty;
    // private Company companyModel;
     private DatabaseDAO dao;
     private Company company;
@@ -57,6 +59,7 @@ public class ClientController implements Initializable {
         phoneProperty = new SimpleStringProperty(this.company.getClickedClient().getPhoneNumber());
         eMailProperty = new SimpleStringProperty(this.company.getClickedClient().getEMail());
         dateOfBirthProperty = new SimpleObjectProperty<>(this.company.getClickedClient().getDateOfBirth());
+      //  profitProperty = new SimpleStringProperty(String.valueOf(this.company.getClickedClient().getProfit()));
     }
 
 
@@ -69,12 +72,18 @@ public class ClientController implements Initializable {
         phoneField.textProperty().bindBidirectional(phoneProperty);
         eMailField.textProperty().bindBidirectional(eMailProperty);
         dateOfBirthPicker.valueProperty().bindBidirectional(dateOfBirthProperty);
+      //  profitText.textProperty().bindBidirectional(profitProperty);
 
         nameField.setText(company.getClickedClient().getName());
         addressField.setText(company.getClickedClient().getAddress());
         phoneField.setText(company.getClickedClient().getPhoneNumber());
         eMailField.setText(company.getClickedClient().getEMail());
         dateOfBirthPicker.setValue(company.getClickedClient().getDateOfBirth());
+      //  profitText.setText(String.valueOf(company.getClickedClient().getProfit()));
+
+        SpinnerValueFactory<Double> valueFactory = new SpinnerValueFactory.DoubleSpinnerValueFactory(1, 10000000);
+        profitSpinner.setValueFactory(valueFactory);
+        profitSpinner.getValueFactory().setValue(company.getClickedClient().getProfit());
 
         // validation of fields in case they are changed
         nameField.textProperty().addListener((observableValue, o, n) -> {
@@ -161,6 +170,7 @@ public class ClientController implements Initializable {
             Client newClient = new Client(name, date, address, phone, eMail, null);
             //companyModel.changeClient(companyModel.getClickedClient(), newClient);
             newClient.setId(company.getClickedClient().getId());
+            newClient.setProfit(profitSpinner.getValue());
             System.out.println("IZ CLIENT CONTROLLERA; ID JE " + newClient.getId());
             newClient.setContractList(company.getClickedClient().getContractList());
             dao.executeChangeClient(newClient);

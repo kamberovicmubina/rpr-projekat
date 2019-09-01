@@ -1,5 +1,7 @@
 package sample;
 
+import javafx.beans.property.DoubleProperty;
+import javafx.beans.property.SimpleDoubleProperty;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
@@ -43,6 +45,7 @@ public class Controller implements Initializable {
     private ObservableList<String> servicesObservableList = FXCollections.observableArrayList();
     private ObservableList<Client> clientsObservableList = FXCollections.observableArrayList();
 
+
     public Controller (DatabaseDAO databaseDAO) {
         dao = databaseDAO;
         company = dao.executeGetCompanyQuery(1);
@@ -66,6 +69,7 @@ public class Controller implements Initializable {
         });
         servicesObservableList.addAll(dao.executeGetServices());
         servicesList.setItems(servicesObservableList);
+
 
     }
 

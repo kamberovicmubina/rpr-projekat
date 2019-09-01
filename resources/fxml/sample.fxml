@@ -58,7 +58,7 @@
                <tooltip>
                   <Tooltip text="%profitPerClient" />
                </tooltip></Button>
-            <Button mnemonicParsing="false" text="%clientNumberStatistic">
+            <Button fx:id="clientNumberBtn" mnemonicParsing="false" onAction="#onClientNumber" text="%clientNumberStatistic">
                <tooltip>
                   <Tooltip text="%clientNumberStatistic" />
                </tooltip></Button>

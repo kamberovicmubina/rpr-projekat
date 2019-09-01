@@ -35,6 +35,7 @@ public class Controller implements Initializable {
     public MenuItem bosnianOption;
     public MenuItem englishOption;
     public Button profitButton;
+    public Button clientNumberBtn;
     public BorderPane borderPane;
     private ResourceBundle bundle;
     private DatabaseDAO dao;
@@ -241,6 +242,25 @@ public class Controller implements Initializable {
             e1.printStackTrace();
         }
 
+    }
+
+    public void onClientNumber (ActionEvent actionEvent) {
+        FXMLLoader loader = new FXMLLoader(getClass().getResource("/fxml/inputTimePeriod.fxml"), bundle);
+        loader.setController(new InputTimePeriodController(dao));
+        Parent root = null;
+        try {
+            root = loader.load();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        if (root != null) {
+            Stage secondaryStage = new Stage();
+            secondaryStage.setTitle(bundle.getString("numberStat"));
+            secondaryStage.setResizable(false);
+            secondaryStage.setScene(new Scene(root, Region.USE_COMPUTED_SIZE, Region.USE_COMPUTED_SIZE));
+            secondaryStage.initModality(Modality.APPLICATION_MODAL);
+            secondaryStage.show();
+        }
     }
 
 }

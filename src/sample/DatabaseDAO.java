@@ -415,7 +415,7 @@ public class DatabaseDAO {
         return contracts;
     }
 
-    private String getStringFromLocalDate(LocalDate dateOfBirth) {
+    public static String getStringFromLocalDate(LocalDate dateOfBirth) {
         String date = "";
         date += String.valueOf(dateOfBirth.getYear()) + " " + dateOfBirth.getMonthValue() + " " + String.valueOf(dateOfBirth.getDayOfMonth());
         return date;

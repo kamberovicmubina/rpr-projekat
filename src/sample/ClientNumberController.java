@@ -23,6 +23,7 @@ public class ClientNumberController implements Initializable {
 
     @Override
     public void initialize(URL url, ResourceBundle resourceBundle) {
+        bundle = resourceBundle;
         nameListView.setItems(clientsName);
         numberTextField.setText(String.valueOf(clientsName.size()));
     }

@@ -49,21 +49,23 @@ public class InputTimePeriodController implements Initializable {
 
 
     public void onShowStatistic () {
-        FXMLLoader loader = new FXMLLoader(getClass().getResource("/fxml/clientNumberStat.fxml"), bundle);
-        loader.setController(new ClientNumberController(dao, getClientsInPeriodOfTime(startTime.getValue(), endTime.getValue())));
-        Parent root = null;
-        try {
-            root = loader.load();
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-        if (root != null) {
-            Stage secondaryStage = new Stage();
-            secondaryStage.setTitle(bundle.getString("numberStat"));
-            secondaryStage.setResizable(false);
-            secondaryStage.setScene(new Scene(root, Region.USE_COMPUTED_SIZE, Region.USE_COMPUTED_SIZE));
-            secondaryStage.initModality(Modality.APPLICATION_MODAL);
-            secondaryStage.show();
+        if (startTime != null && endTime != null) {
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("/fxml/clientNumberStat.fxml"), bundle);
+            loader.setController(new ClientNumberController(dao, getClientsInPeriodOfTime(startTime.getValue(), endTime.getValue())));
+            Parent root = null;
+            try {
+                root = loader.load();
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+            if (root != null) {
+                Stage secondaryStage = new Stage();
+                secondaryStage.setTitle(bundle.getString("numberStat"));
+                secondaryStage.setResizable(false);
+                secondaryStage.setScene(new Scene(root, Region.USE_COMPUTED_SIZE, Region.USE_COMPUTED_SIZE));
+                secondaryStage.initModality(Modality.APPLICATION_MODAL);
+                secondaryStage.show();
+            }
         }
     }
 

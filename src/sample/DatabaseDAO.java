@@ -223,7 +223,6 @@ public class DatabaseDAO {
         return contracts;
     }
 
-
     private Client executeGetOneClient (int idClient) {
         Client client = null;
         try {

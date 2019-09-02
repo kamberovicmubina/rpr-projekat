@@ -2,7 +2,6 @@ package sample;
 
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
-
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.sql.*;
@@ -70,7 +69,6 @@ public class DatabaseDAO {
         } catch (FileNotFoundException e2) {
             e2.printStackTrace();
         }
-
     }
 
     public Company executeGetCompanyQuery (int idCompany) {
@@ -96,7 +94,6 @@ public class DatabaseDAO {
         } catch (SQLException e) {
             e.printStackTrace();
         }
-
         return company;
     }
 
@@ -239,7 +236,6 @@ public class DatabaseDAO {
                 String phone = rs.getString(4);
                 String eMail = rs.getString(5);
                 double profit = rs.getDouble(7);
-
                 client = new Client(name, dateLocal, address, phone, eMail, null, profit);
                 return client;
             }
@@ -265,7 +261,6 @@ public class DatabaseDAO {
                 person = new Person(name, dateLocal, address, phone, eMail);
                 return person;
             }
-
         } catch (SQLException e) {
             e.printStackTrace();
         }
@@ -290,7 +285,6 @@ public class DatabaseDAO {
         } catch (SQLException e) {
             e.printStackTrace();
         }
-
     }
 
     private String getStringFromServices(ObservableList<String> services) {
@@ -371,8 +365,10 @@ public class DatabaseDAO {
         } catch (SQLException e) {
             e.printStackTrace();
         }
+        updateCompanyClients(client.getId());
+    }
 
-        // update kompanije
+    private void updateCompanyClients(int id) {
         try {
             changeCompanyQuery = connection.prepareStatement("UPDATE company SET clients=? WHERE id=?");
             PreparedStatement helpStatement = connection.prepareStatement("SELECT clients FROM company WHERE id=?");
@@ -380,7 +376,7 @@ public class DatabaseDAO {
             ResultSet rs = helpStatement.executeQuery();
             String newClients = "";
             while (rs.next()) {
-                newClients = addIdToString(rs.getString(1), client.getId());
+                newClients = addIdToString(rs.getString(1), id);
             }
             changeCompanyQuery.setString(1, newClients);
             changeCompanyQuery.setInt(2, 1);
@@ -423,7 +419,6 @@ public class DatabaseDAO {
         } catch (SQLException e) {
             e.printStackTrace();
         }
-
         // update client
         try {
             changeCompanyQuery = connection.prepareStatement("UPDATE client SET contracts=? WHERE id=?");
@@ -440,24 +435,9 @@ public class DatabaseDAO {
         } catch (SQLException e) {
             e.printStackTrace();
         }
-        // update kompanije
-        try {
-            changeCompanyQuery = connection.prepareStatement("UPDATE company SET clients=? WHERE id=?");
-            PreparedStatement helpStatement = connection.prepareStatement("SELECT clients FROM company WHERE id=?");
-            helpStatement.setInt(1, 1);
-            ResultSet rs = helpStatement.executeQuery();
-            String newClients = "";
-            while (rs.next()) {
-                newClients = addIdToString(rs.getString(1), contract.getPerson().getId());
-            }
-            changeCompanyQuery.setString(1, newClients);
-            changeCompanyQuery.setInt(2, 1);
-            changeCompanyQuery.executeUpdate();
-        } catch (SQLException e) {
-            e.printStackTrace();
-        }
-
+        updateCompanyClients(contract.getPerson().getId());
     }
+
     public int getNextAvailableContractId () {
         PreparedStatement helpStatement = null;
         try {
@@ -498,23 +478,7 @@ public class DatabaseDAO {
         } catch (SQLException e) {
             e.printStackTrace();
         }
-        //update company
-        try {
-            changeCompanyQuery = connection.prepareStatement("UPDATE company SET clients=? WHERE id=?");
-            PreparedStatement helpStatement = connection.prepareStatement("SELECT clients FROM company WHERE id=?");
-            helpStatement.setInt(1, 1);
-            ResultSet rs = helpStatement.executeQuery();
-            String newClients = "";
-            while (rs.next()) {
-                newClients = deleteIdFromString(rs.getString(1), id);
-            }
-            changeCompanyQuery.setString(1, newClients);
-            changeCompanyQuery.setInt(2, 1);
-            changeCompanyQuery.executeUpdate();
-        } catch (SQLException e) {
-            e.printStackTrace();
-        }
-
+        updateCompanyClients(id);
     }
 
     private String deleteIdFromString(String string, int id) {
@@ -577,22 +541,7 @@ public class DatabaseDAO {
         } catch (SQLException e) {
             e.printStackTrace();
         }
-        // update kompanije
-        try {
-            changeCompanyQuery = connection.prepareStatement("UPDATE company SET clients=? WHERE id=?");
-            PreparedStatement helpStatement = connection.prepareStatement("SELECT clients FROM company WHERE id=?");
-            helpStatement.setInt(1, 1);
-            ResultSet rs = helpStatement.executeQuery();
-            String newClients = "";
-            while (rs.next()) {
-                newClients = addIdToString(rs.getString(1), personId);
-            }
-            changeCompanyQuery.setString(1, newClients);
-            changeCompanyQuery.setInt(2, 1);
-            changeCompanyQuery.executeUpdate();
-        } catch (SQLException e) {
-            e.printStackTrace();
-        }
+        updateCompanyClients(personId);
     }
 
     public void executeChangeClient (Client client) {
@@ -610,22 +559,7 @@ public class DatabaseDAO {
         } catch (SQLException e) {
             e.printStackTrace();
         }
-        // update kompanije
-        try {
-            changeCompanyQuery = connection.prepareStatement("UPDATE company SET clients=? WHERE id=?");
-            PreparedStatement helpStatement = connection.prepareStatement("SELECT clients FROM company WHERE id=?");
-            helpStatement.setInt(1, 1);
-            ResultSet rs = helpStatement.executeQuery();
-            String newClients = "";
-            while (rs.next()) {
-                newClients = addIdToString(rs.getString(1), client.getId());
-            }
-            changeCompanyQuery.setString(1, newClients);
-            changeCompanyQuery.setInt(2, 1);
-            changeCompanyQuery.executeUpdate();
-        } catch (SQLException e) {
-            e.printStackTrace();
-        }
+        updateCompanyClients(client.getId());
     }
 
     public void executeInsertService (String newService) {
@@ -645,7 +579,6 @@ public class DatabaseDAO {
         } catch (SQLException e) {
             e.printStackTrace();
         }
-
     }
 
     public ObservableList<String> executeGetServices () {
@@ -711,6 +644,4 @@ public class DatabaseDAO {
         services = builder.toString();
         return services;
     }
-
-
 }

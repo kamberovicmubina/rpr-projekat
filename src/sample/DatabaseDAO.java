@@ -388,7 +388,8 @@ public class DatabaseDAO {
     }
 
     private String addIdToString(String oldString, int id) {
-        oldString += " " + String.valueOf(id);
+        if (oldString.length() == 0) oldString += String.valueOf(id);
+        else oldString += " " + String.valueOf(id);
         return oldString;
     }
 
@@ -512,7 +513,6 @@ public class DatabaseDAO {
     }
 
     public void executeDeleteContract (int id) {
-        System.out.println("IZ DATABASEDAO BRISANJE UGOVORA ID " + id);
         int personId = 0;
         try {
             PreparedStatement statement = connection.prepareStatement("SELECT person FROM contract WHERE id=?");

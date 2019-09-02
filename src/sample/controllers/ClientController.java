@@ -142,7 +142,6 @@ public class ClientController implements Initializable {
         else {
             String name = nameField.getText();
             LocalDate date = dateOfBirthPicker.getValue();
-            System.out.println(date.getYear() + " " + date.getMonthValue() + " " + date.getDayOfMonth());
             String address = addressField.getText();
             String phone = phoneField.getText();
             String eMail = eMailField.getText();

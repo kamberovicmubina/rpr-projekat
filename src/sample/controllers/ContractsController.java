@@ -1,4 +1,4 @@
-package sample;
+package sample.controllers;
 
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
@@ -14,6 +14,10 @@ import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.layout.Region;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
+import sample.classes.Company;
+import sample.classes.Contract;
+import sample.DatabaseDAO;
+
 import java.io.IOException;
 import java.net.URL;
 import java.time.LocalDate;

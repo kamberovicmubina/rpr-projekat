@@ -1,4 +1,4 @@
-package sample;
+package sample.controllers;
 
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
@@ -13,6 +13,11 @@ import javafx.scene.layout.Region;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
 import net.sf.jasperreports.engine.JRException;
+import sample.*;
+import sample.classes.Client;
+import sample.classes.Company;
+import sample.exceptions.ObjectNotSelectedException;
+
 import java.io.IOException;
 import java.net.URL;
 import java.util.Locale;

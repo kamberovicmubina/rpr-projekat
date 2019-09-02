@@ -6,6 +6,8 @@ import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.stage.Stage;
+import sample.controllers.Controller;
+
 import java.io.File;
 import java.util.Locale;
 import java.util.ResourceBundle;

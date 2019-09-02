@@ -1,4 +1,4 @@
-package sample;
+package sample.classes;
 
 import java.util.List;
 

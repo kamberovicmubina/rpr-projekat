@@ -1,4 +1,4 @@
-package sample;
+package sample.classes;
 
 import javafx.beans.property.ObjectProperty;
 import javafx.beans.property.SimpleObjectProperty;

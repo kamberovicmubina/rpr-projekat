@@ -1,4 +1,4 @@
-package sample;
+package sample.controllers;
 
 import javafx.beans.property.*;
 import javafx.fxml.FXMLLoader;
@@ -9,6 +9,10 @@ import javafx.scene.control.*;
 import javafx.scene.layout.Region;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
+import sample.*;
+import sample.classes.Client;
+import sample.classes.Company;
+
 import java.io.IOException;
 import java.net.URL;
 import java.time.LocalDate;

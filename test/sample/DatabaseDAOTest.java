@@ -3,6 +3,9 @@ package sample;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import org.junit.jupiter.api.Test;
+import sample.classes.Client;
+import sample.classes.Contract;
+
 import java.io.File;
 import java.time.LocalDate;
 import static org.junit.jupiter.api.Assertions.*;

@@ -1,10 +1,11 @@
-package sample;
+package sample.controllers;
 
 import javafx.collections.ObservableList;
 import javafx.fxml.Initializable;
 import javafx.scene.control.ListView;
 import javafx.scene.control.TextField;
-import org.w3c.dom.Text;
+import sample.classes.Client;
+import sample.DatabaseDAO;
 
 import java.net.URL;
 import java.util.ResourceBundle;

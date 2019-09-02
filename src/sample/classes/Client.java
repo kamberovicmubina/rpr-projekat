@@ -1,7 +1,10 @@
-package sample;
+package sample.classes;
 
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
+import sample.classes.Contract;
+import sample.classes.Person;
+
 import java.io.Serializable;
 import java.time.LocalDate;
 

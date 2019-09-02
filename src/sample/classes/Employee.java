@@ -1,4 +1,7 @@
-package sample;
+package sample.classes;
+
+import sample.classes.Contract;
+import sample.classes.Person;
 
 import java.time.LocalDate;
 import java.util.List;

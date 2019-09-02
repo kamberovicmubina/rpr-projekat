@@ -2,6 +2,8 @@ package sample;
 
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
+import sample.classes.*;
+
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.sql.*;

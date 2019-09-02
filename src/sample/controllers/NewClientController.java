@@ -1,9 +1,13 @@
-package sample;
+package sample.controllers;
 
 import javafx.event.ActionEvent;
 import javafx.fxml.Initializable;
 import javafx.scene.control.*;
 import javafx.stage.Stage;
+import sample.classes.Client;
+import sample.DatabaseDAO;
+import sample.FieldsValidation;
+
 import java.net.URL;
 import java.time.LocalDate;
 import java.util.ResourceBundle;

@@ -7,6 +7,7 @@
 <?import javafx.scene.control.ListView?>
 <?import javafx.scene.control.MenuButton?>
 <?import javafx.scene.control.MenuItem?>
+<?import javafx.scene.control.TextField?>
 <?import javafx.scene.control.Tooltip?>
 <?import javafx.scene.layout.BorderPane?>
 <?import javafx.scene.layout.HBox?>
@@ -23,6 +24,7 @@
       <VBox prefHeight="273.0" prefWidth="400.0" BorderPane.alignment="CENTER">
          <children>
             <Label alignment="CENTER" text="%clients" />
+            <TextField fx:id="searchField" promptText="Search" />
             <ListView fx:id="clientList" prefHeight="200.0" prefWidth="200.0">
                <contextMenu>
                   <ContextMenu>
@@ -41,7 +43,7 @@
       <VBox prefHeight="298.0" prefWidth="132.0" BorderPane.alignment="CENTER">
          <children>
             <Label alignment="CENTER" contentDisplay="CENTER" text="%ourServices" textAlignment="CENTER" />
-            <ListView fx:id="servicesList" prefHeight="220.0" prefWidth="137.0" />
+            <ListView fx:id="servicesList" prefHeight="271.0" prefWidth="132.0" />
             <HBox prefHeight="100.0" prefWidth="200.0">
                <children>
                   <Button fx:id="addServiceBtn" mnemonicParsing="false" onAction="#onAddService" text="%add" />

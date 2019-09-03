@@ -1,7 +1,11 @@
 package sample.controllers;
 
+import javafx.beans.value.ChangeListener;
+import javafx.beans.value.ObservableValue;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
+import javafx.collections.transformation.FilteredList;
+import javafx.collections.transformation.SortedList;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
@@ -12,6 +16,7 @@ import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.Region;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
+import javafx.util.Callback;
 import net.sf.jasperreports.engine.JRException;
 import sample.*;
 import sample.classes.Client;
@@ -29,6 +34,7 @@ public class Controller implements Initializable {
     public ListView<Client> clientList;
     public ListView<String> servicesList;
     public BorderPane borderPane;
+    public TextField searchField;
     private ResourceBundle bundle;
     private DatabaseDAO dao;
     private Company company;
@@ -44,7 +50,19 @@ public class Controller implements Initializable {
     public void initialize(URL url, ResourceBundle resourceBundle) {
         bundle = resourceBundle;
         clientsObservableList.addAll(dao.executeGetClientsQuery());
-        clientList.setItems(clientsObservableList);
+        FilteredList<Client> filteredList = new FilteredList<>(clientsObservableList, p->true);
+        searchField.textProperty().addListener((observableValue, oldValue, newValue) -> {
+            filteredList.setPredicate(client -> {
+                if(newValue == null || newValue.isEmpty()){
+                    return true;
+                }
+                String filter = newValue.toLowerCase();
+                if (client.getName().toLowerCase().startsWith(filter)) return true;
+                return false;
+            });
+        });
+        SortedList<Client> sortedList = new SortedList<>(filteredList);
+        clientList.setItems(sortedList);
         clientList.setOnMouseClicked(mouseEvent -> {
             company.setClickedClient(clientList.getSelectionModel().getSelectedItem());
             if (mouseEvent.getClickCount() == 2) {
@@ -239,5 +257,6 @@ public class Controller implements Initializable {
         secondaryStage.show();
         return secondaryStage;
     }
+
 
 }

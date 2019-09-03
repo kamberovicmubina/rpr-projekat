@@ -15,21 +15,29 @@ class DatabaseDAOTest {
     @Test
     void addClient () {
         DatabaseDAO.removeInstance();
-        File dbfile = new File("/resources/database.db");
+        File dbfile = new File("database.db");
         dbfile.delete();
         DatabaseDAO dao = DatabaseDAO.getInstance();
         LocalDate date = LocalDate.of(1999, 9, 9);
         Client client = new Client("Klijent provjera", date, "Adresa", "092833332", "mailll@gmail.com", null, 92.3);
         client.setId(dao.getNextAvailableClientId());
         dao.executeInsertClient(client);
-        ObservableList<Client> clientsFromDatabase = dao.executeGetClientsQuery();
-        assertEquals(client.getName(), clientsFromDatabase.get(clientsFromDatabase.size()-1).getName());
+        ObservableList<Client> clientsFromDatabase = FXCollections.observableArrayList();
+        clientsFromDatabase.addAll(dao.executeGetClientsQuery());
+        boolean test = false;
+        for (Client c : clientsFromDatabase) {
+            if (c.getId() == client.getId()) {
+                test = true;
+                break;
+            }
+        }
+        assertTrue(test);
     }
 
     @Test
     void addContract () {
         DatabaseDAO.removeInstance();
-        File dbfile = new File("/resources/database.db");
+        File dbfile = new File("database.db");
         dbfile.delete();
         DatabaseDAO dao = DatabaseDAO.getInstance();
         LocalDate date = LocalDate.of(1999, 9, 9);
@@ -37,20 +45,21 @@ class DatabaseDAOTest {
         Contract contract = new Contract("Testni ugovor", null, date, date2);
         contract.setId(dao.getNextAvailableContractId());
         ObservableList<Contract> contracts = FXCollections.observableArrayList();
-        contracts.add(contract);
         Client client = new Client("Klijent provjera", date, "Adresa", "092833332", "mailll@gmail.com", contracts, 92.3);
         client.setId(dao.getNextAvailableClientId());
         contract.setPerson(client);
+        contracts.add(contract);
         dao.executeInsertClient(client);
         dao.executeInsertContract(contract);
-        ObservableList<Contract> contractsFromDatabase = dao.executeGetClientContractsQuery(client.getId());
+        ObservableList<Contract> contractsFromDatabase = FXCollections.observableArrayList();
+        contractsFromDatabase.addAll(dao.executeGetClientContractsQuery(client.getId()));
         assertEquals(contract.getId(), contractsFromDatabase.get(contractsFromDatabase.size()-1).getId());
     }
 
     @Test
     void deleteContract () {
         DatabaseDAO.removeInstance();
-        File dbfile = new File("/resources/database.db");
+        File dbfile = new File("database.db");
         dbfile.delete();
         DatabaseDAO dao = DatabaseDAO.getInstance();
         LocalDate date = LocalDate.of(1999, 9, 9);

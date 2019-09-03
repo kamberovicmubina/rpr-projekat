@@ -1,6 +1,29 @@
 .fieldCorrect {
-    -fx-control-inner-background: greenyellow;
+    -fx-control-inner-background: #339900;
 }
 .fieldIncorrect {
-    -fx-control-inner-background: lightpink;
+    -fx-control-inner-background: #B80000;
+}
+.defaultClass {
+    -fx-control-inner-background: #E0E0E0;
+}
+.buttonClass {
+    -fx-background-color: #c3c4c4,
+    linear-gradient(#d6d6d6 50%, white 100%),
+    radial-gradient(center 50% -40%, radius 200%, #e6e6e6 45%, rgba(230,230,230,0) 50%);
+    -fx-background-insets: 0,1,1;
+    -fx-text-fill: black;
+    -fx-effect: dropshadow( three-pass-box , rgba(0,0,0,0.6) , 3, 0.0 , 0 , 1 );
+}
+.list-cell:selected {
+    -fx-background-color: #BEBEBE;
+}
+.list-cell {
+    -fx-background-color: white;
+}
+.table-row-cell:selected {
+    -fx-background-color: #BEBEBE;
+}
+.table-row-cell {
+    -fx-background-color: white;
 }

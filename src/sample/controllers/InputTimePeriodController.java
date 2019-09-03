@@ -6,6 +6,7 @@ import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
+import javafx.scene.control.Alert;
 import javafx.scene.control.DatePicker;
 import javafx.scene.layout.Region;
 import javafx.stage.Modality;
@@ -29,7 +30,7 @@ public class InputTimePeriodController implements Initializable {
     }
 
     public ObservableList<Client> getClientsInPeriodOfTime (LocalDate start, LocalDate end) {
-        if (start.isAfter(end)) return null;
+        if (start == null || end == null || start.isAfter(end)) return null;
         ObservableList<Client> validClients = FXCollections.observableArrayList();
         ObservableList<Client> clients = dao.executeGetClientsQuery();
         for (Client c : clients) {
@@ -46,7 +47,7 @@ public class InputTimePeriodController implements Initializable {
 
 
     public void onShowStatistic () {
-        if (startTime != null && endTime != null) {
+        if (startTime.getValue() != null && endTime.getValue() != null) {
             FXMLLoader loader = new FXMLLoader(getClass().getResource("/fxml/clientNumberStat.fxml"), bundle);
             loader.setController(new ClientNumberController(dao, getClientsInPeriodOfTime(startTime.getValue(), endTime.getValue())));
             Parent root = null;
@@ -63,7 +64,14 @@ public class InputTimePeriodController implements Initializable {
                 secondaryStage.initModality(Modality.APPLICATION_MODAL);
                 secondaryStage.show();
             }
+        } else {
+            Alert alert = new Alert(Alert.AlertType.INFORMATION);
+            alert.setTitle(bundle.getString("error"));
+            alert.setHeaderText(null);
+            alert.setContentText(bundle.getString("incorrectInfo"));
+            alert.showAndWait();
         }
+
     }
 
     @Override

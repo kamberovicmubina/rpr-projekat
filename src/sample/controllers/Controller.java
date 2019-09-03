@@ -49,6 +49,7 @@ public class Controller implements Initializable {
     @Override
     public void initialize(URL url, ResourceBundle resourceBundle) {
         bundle = resourceBundle;
+        clientsObservableList.clear();
         clientsObservableList.addAll(dao.executeGetClientsQuery());
         FilteredList<Client> filteredList = new FilteredList<>(clientsObservableList, p->true);
         searchField.textProperty().addListener((observableValue, oldValue, newValue) -> {
@@ -73,6 +74,7 @@ public class Controller implements Initializable {
                 }
             }
         });
+        servicesObservableList.clear();
         servicesObservableList.addAll(dao.executeGetServices());
         servicesList.setItems(servicesObservableList);
     }

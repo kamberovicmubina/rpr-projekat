@@ -200,11 +200,13 @@ public class ClientController implements Initializable {
 
     private void setCorrect (TextField field) {
         field.getStyleClass().removeAll("fieldIncorrect");
+        field.getStyleClass().removeAll("defaultClass");
         field.getStyleClass().add("fieldCorrect");
     }
 
     private static void setIncorrect (TextField field) {
         field.getStyleClass().removeAll("fieldCorrect");
+        field.getStyleClass().removeAll("defaultClass");
         field.getStyleClass().add("fieldIncorrect");
     }
 }

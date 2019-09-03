@@ -10,8 +10,12 @@
 <?import javafx.scene.layout.HBox?>
 <?import javafx.scene.layout.RowConstraints?>
 
+<?import java.net.URL?>
 <GridPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="400.0" prefWidth="600.0" xmlns="http://javafx.com/javafx/8.0.172-ea" xmlns:fx="http://javafx.com/fxml/1">
-  <columnConstraints>
+    <stylesheets>
+        <URL value="@/css/style.css" />
+    </stylesheets>
+    <columnConstraints>
     <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
     <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
   </columnConstraints>
@@ -25,13 +29,13 @@
       <Label text="%titleOfContract" />
       <Label text="%dateFrom" GridPane.rowIndex="1" />
       <Label text="%dateTo" GridPane.rowIndex="2" />
-      <TextField fx:id="titleField" GridPane.columnIndex="1" />
-      <DatePicker fx:id="fromPicker" GridPane.columnIndex="1" GridPane.rowIndex="1" />
-      <DatePicker fx:id="toPicker" GridPane.columnIndex="1" GridPane.rowIndex="2" />
+      <TextField styleClass="defaultClass" fx:id="titleField" GridPane.columnIndex="1" />
+      <DatePicker styleClass="defaultClass" fx:id="fromPicker" GridPane.columnIndex="1" GridPane.rowIndex="1" />
+      <DatePicker styleClass="defaultClass" fx:id="toPicker" GridPane.columnIndex="1" GridPane.rowIndex="2" />
       <HBox prefHeight="100.0" prefWidth="200.0" GridPane.columnIndex="1" GridPane.rowIndex="3">
          <children>
-            <Button fx:id="saveBtn" mnemonicParsing="false" onAction="#onSave" text="%save" />
-            <Button fx:id="cancelBtn" mnemonicParsing="false" onAction="#onCancel" text="%cancel" />
+            <Button styleClass="buttonClass" fx:id="saveBtn" mnemonicParsing="false" onAction="#onSave" text="%save" />
+            <Button styleClass="buttonClass" fx:id="cancelBtn" mnemonicParsing="false" onAction="#onCancel" text="%cancel" />
          </children>
       </HBox>
    </children>

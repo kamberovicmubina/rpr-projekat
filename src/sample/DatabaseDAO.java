@@ -162,6 +162,7 @@ public class DatabaseDAO {
         } catch (SQLException e) {
             e.printStackTrace();
         }
+        FXCollections.sort(clients);
         return clients;
     }
 

@@ -8,7 +8,7 @@ import sample.classes.Person;
 import java.io.Serializable;
 import java.time.LocalDate;
 
-public class Client extends Person implements Serializable {
+public class Client extends Person implements Comparable<Client> {
     ObservableList<Contract> contractList = FXCollections.observableArrayList();
     double profit;
 
@@ -49,5 +49,11 @@ public class Client extends Person implements Serializable {
     @Override
     public String toString () {
         return getName();
+    }
+
+
+    @Override
+    public int compareTo(Client o) {
+        return this.getName().compareToIgnoreCase(o.getName());
     }
 }

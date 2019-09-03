@@ -79,20 +79,22 @@ public class DatabaseDAO {
             getCompanyQuery = connection.prepareStatement("SELECT * FROM company WHERE id = ?");
             getCompanyQuery.setInt(1, idCompany);
             ResultSet rs = getCompanyQuery.executeQuery();
-            // only one row will be returned
-            String name = rs.getString(1);
-            String address = rs.getString(3);
-            String departments = rs.getString(4);
-            ObservableList<Department> departmentList = getDepartmentsFromString (departments);
-            String employees = rs.getString(5);
-            ObservableList<Employee> employeeList = getEmployeesFromString (employees);
-            String clients = rs.getString(6);
-            ObservableList<Client> clientList = getClientsFromString (clients);
-            String services = rs.getString(7);
-            ObservableList<String> serviceList = getServicesFromString (services);
-            int ownerId = rs.getInt(8);
-            Person owner = executeGetOnePerson(ownerId);
-            company = new Company(name, address, departmentList, employeeList, clientList, owner, serviceList);
+            while (rs.next()) {
+                String name = rs.getString(1);
+                String address = rs.getString(3);
+                String departments = rs.getString(4);
+                ObservableList<Department> departmentList = getDepartmentsFromString(departments);
+                String employees = rs.getString(5);
+                ObservableList<Employee> employeeList = getEmployeesFromString(employees);
+                String clients = rs.getString(6);
+                ObservableList<Client> clientList = getClientsFromString(clients);
+                String services = rs.getString(7);
+                ObservableList<String> serviceList = getServicesFromString(services);
+                int ownerId = rs.getInt(8);
+                Person owner = executeGetOnePerson(ownerId);
+                company = new Company(name, address, departmentList, employeeList, clientList, owner, serviceList);
+                company.setId(idCompany);
+            }
         } catch (SQLException e) {
             e.printStackTrace();
         }
@@ -166,34 +168,28 @@ public class DatabaseDAO {
         return clients;
     }
 
-    private LocalDate getLocalDateFromString(String dateOfBirth) {
+    public LocalDate getLocalDateFromString(String dateOfBirth) {
         if (dateOfBirth.length() == 0) {
             return null;
         }
         //string has to be in one of the following formats in order for this function to work
-        int year = Integer.parseInt(dateOfBirth.substring(0, 4));
+        int year, month, day;
         if (dateOfBirth.matches("^\\d\\d\\d\\d \\d\\d \\d\\d$") ) {
-            int month = Integer.parseInt(dateOfBirth.substring(5, 7));
-            int day = Integer.parseInt(dateOfBirth.substring(8, 10));
-            LocalDate localDate = LocalDate.of(year, month, day);
-            return localDate;
+            month = Integer.parseInt(dateOfBirth.substring(5, 7));
+            day = Integer.parseInt(dateOfBirth.substring(8, 10));
         } else if (dateOfBirth.matches("^\\d\\d\\d\\d \\d \\d\\d$")) {
-            int month = Integer.parseInt(dateOfBirth.substring(5, 6));
-            int day = Integer.parseInt(dateOfBirth.substring(7, 9));
-            LocalDate localDate = LocalDate.of(year, month, day);
-            return localDate;
+            month = Integer.parseInt(dateOfBirth.substring(5, 6));
+            day = Integer.parseInt(dateOfBirth.substring(7, 9));
         } else if (dateOfBirth.matches("^\\d\\d\\d\\d \\d \\d$")) {
-            int month = Integer.parseInt(dateOfBirth.substring(5, 6));
-            int day = Integer.parseInt(dateOfBirth.substring(7, 8));
-            LocalDate localDate = LocalDate.of(year, month, day);
-            return localDate;
+            month = Integer.parseInt(dateOfBirth.substring(5, 6));
+            day = Integer.parseInt(dateOfBirth.substring(7, 8));
         } else if (dateOfBirth.matches("^\\d\\d\\d\\d \\d\\d \\d$")) {
-            int month = Integer.parseInt(dateOfBirth.substring(5, 7));
-            int day = Integer.parseInt(dateOfBirth.substring(8, 9));
-            LocalDate localDate = LocalDate.of(year, month, day);
-            return localDate;
-        }
-        return null;
+            month = Integer.parseInt(dateOfBirth.substring(5, 7));
+            day = Integer.parseInt(dateOfBirth.substring(8, 9));
+        } else return null;
+        year = Integer.parseInt(dateOfBirth.substring(0, 4));
+        LocalDate localDate = LocalDate.of(year, month, day);
+        return localDate;
     }
 
     public ObservableList<Contract> executeGetClientContractsQuery (int idClient) {

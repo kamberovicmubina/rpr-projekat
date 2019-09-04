@@ -401,6 +401,7 @@ public class DatabaseDAO {
     }
 
     public static String getStringFromLocalDate(LocalDate dateOfBirth) {
+        if (dateOfBirth == null || dateOfBirth.getMonth() == null) return null;
         String date = "";
         date += String.valueOf(dateOfBirth.getYear()) + " " + dateOfBirth.getMonthValue() + " " + String.valueOf(dateOfBirth.getDayOfMonth());
         return date;
@@ -480,16 +481,16 @@ public class DatabaseDAO {
         updateCompanyClients(id);
     }
 
-    private String deleteIdFromString(String string, int id) {
+    public String deleteIdFromString(String string, int id) {
         String idString = "";
         StringBuilder builder = null;
+        int startIndex, endIndex;
         for (int i = 0; i < string.length(); i++) {
             if (string.charAt(i) != ' ') {
                 idString += string.charAt(i);
             } else {
                 int idNumber = Integer.parseInt(idString);
                 if (idNumber == id) { // we need to delete this
-                    int startIndex, endIndex;
                     if (i != string.length()-1) { // and a blank space after the number
                         startIndex = string.indexOf(idString);
                         endIndex = startIndex + idString.length() + 1;
@@ -506,6 +507,18 @@ public class DatabaseDAO {
                 idString = "";
             }
         }
+        int idNumber = Integer.parseInt(idString); // last number or only number
+        if (string.length() == 1) { // first and only number
+            string = "";
+        } else { // last number
+            startIndex = string.indexOf(idString) - 1; // blank space before the number
+            endIndex = startIndex + idString.length() + 1;
+            builder = new StringBuilder(string);
+            builder.delete(startIndex, endIndex);
+            string = builder.toString();
+            return string;
+        }
+
         return string;
     }
 

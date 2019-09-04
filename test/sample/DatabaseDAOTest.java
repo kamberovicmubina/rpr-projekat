@@ -161,4 +161,70 @@ class DatabaseDAOTest {
         assertAll(() -> assertEquals(company1.getId(), company.getId()),
                 () -> assertEquals(company1.getName(), company.getName()));
     }
+
+    @Test
+    void testChangeClient() {
+        DatabaseDAO.removeInstance();
+        File dbfile = new File("database.db");
+        dbfile.delete();
+        DatabaseDAO dao = DatabaseDAO.getInstance();
+        Client client = new Client();
+        client.setName("Stari klijent");
+        client.setId(dao.getNextAvailableClientId());
+        dao.executeInsertClient(client);
+        LocalDate date = LocalDate.of(1989, 3, 3);
+        Client newClient = new Client("Izmijenjeni klijent", date, "Nova adresa", "09383333", "izmjena@yahoo.com", null);
+        newClient.setId(client.getId());
+        dao.executeChangeClient(newClient);
+        ObservableList<Client> clientsFromDatabase = FXCollections.observableArrayList();
+        clientsFromDatabase.addAll(dao.executeGetClientsQuery());
+        Client compareClient = null;
+        for (Client c : clientsFromDatabase) {
+            if (c.getId() == client.getId()) {
+                compareClient = c;
+                break;
+            }
+        }
+        assertTrue(compareClient.getName().equals("Izmijenjeni klijent"));
+    }
+
+    @Test
+    void testServices () {
+        DatabaseDAO.removeInstance();
+        File dbfile = new File("database.db");
+        dbfile.delete();
+        DatabaseDAO dao = DatabaseDAO.getInstance();
+        // initial state of database: there is a building company with id=1
+        Company company = dao.executeGetCompanyQuery(1);
+        ObservableList<String> services = FXCollections.observableArrayList();
+        dao.executeInsertService("Test");
+        dao.executeInsertService("New service test");
+        services.clear();
+        services.addAll(dao.executeGetServices());
+        assertTrue(services.contains("New service test"));
+        dao.executeDeleteService("New service test");
+        services.clear();
+        services.addAll(dao.executeGetServices());
+        assertFalse(services.contains("New service test"));
+        dao.executeInsertService("Last test");
+        dao.executeDeleteService("Test"); // delete service that is not the last one in the list
+        services.clear();
+        services.addAll(dao.executeGetServices());
+        assertFalse(services.contains("Test"));
+    }
+
+    @Test
+    void testDeleteIdFromString () {
+        String s = "1 2 3 4";
+        DatabaseDAO.removeInstance();
+        File dbfile = new File("database.db");
+        dbfile.delete();
+        DatabaseDAO dao = DatabaseDAO.getInstance();
+        s = dao.deleteIdFromString(s, 2);
+        s = dao.deleteIdFromString(s, 4);
+        s = dao.deleteIdFromString(s, 1);
+        assertEquals(s.length(), 1);
+        s = dao.deleteIdFromString(s, 3);
+        assertEquals(s.length(), 0);
+    }
 }

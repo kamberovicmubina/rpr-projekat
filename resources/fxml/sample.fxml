@@ -74,9 +74,6 @@
    <bottom>
       <HBox prefHeight="33.0" prefWidth="600.0" BorderPane.alignment="CENTER">
          <children>
-            <Label fx:id="companyName" text="%buildingSmall" />
-            <Label fx:id="companyAddress" text="%titova" />
-            <Label fx:id="companyOwner" text="%owner" />
             <MenuButton mnemonicParsing="false" styleClass="buttonClass" text="%izborJezika" textAlignment="CENTER">
               <items>
                 <MenuItem fx:id="bosnianOption" mnemonicParsing="false" onAction="#onBosnian" text="%bosnian" />

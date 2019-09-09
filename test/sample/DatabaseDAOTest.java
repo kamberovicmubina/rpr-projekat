@@ -18,7 +18,7 @@ class DatabaseDAOTest {
         dbfile.delete();
         DatabaseDAO dao = DatabaseDAO.getInstance();
         LocalDate date = LocalDate.of(1999, 9, 9);
-        Client client = new Client("Klijent provjera", date, "Adresa", "092833332", "mailll@gmail.com", null, 92.3);
+        Client client = new Client("Klijent provjera", date, "Adresa", "092833332", "mailll@gmail.com", null, 0);
         client.setId(dao.getNextAvailableClientId());
         dao.executeInsertClient(client);
         ObservableList<Client> clientsFromDatabase = FXCollections.observableArrayList();
@@ -41,10 +41,10 @@ class DatabaseDAOTest {
         DatabaseDAO dao = DatabaseDAO.getInstance();
         LocalDate date = LocalDate.of(1999, 10, 9);
         LocalDate date2 = LocalDate.of(2019, 12, 12);
-        Contract contract = new Contract("Testni ugovor", null, date, date2);
+        Contract contract = new Contract("Testni ugovor", null, date, date2, 298321d);
         contract.setId(dao.getNextAvailableContractId());
         ObservableList<Contract> contracts = FXCollections.observableArrayList();
-        Client client = new Client("Klijent provjera", date, "Adresa", "092833332", "mailll@gmail.com", contracts, 92.3);
+        Client client = new Client("Klijent provjera s ugovorom", date, "Adresa", "092833332", "mailll@gmail.com", contracts, 0);
         client.setId(dao.getNextAvailableClientId());
         contract.setPerson(client);
         contracts.add(contract);
@@ -63,11 +63,11 @@ class DatabaseDAOTest {
         DatabaseDAO dao = DatabaseDAO.getInstance();
         LocalDate date = LocalDate.of(1999, 9, 19);
         LocalDate date2 = LocalDate.of(2019, 12, 12);
-        Contract contract = new Contract("Testni ugovor", null, date, date2);
+        Contract contract = new Contract("Testni ugovor", null, date, date2, 9283.2);
         contract.setId(dao.getNextAvailableContractId());
         ObservableList<Contract> contracts = FXCollections.observableArrayList();
         contracts.add(contract);
-        Client client = new Client("Klijent provjera", date, "Adresa", "092833332", "mailll@gmail.com", contracts, 92.3);
+        Client client = new Client("Klijent provjera", date, "Adresa", "092833332", "mailll@gmail.com", contracts, 0);
         client.setId(dao.getNextAvailableClientId());
         contract.setPerson(client);
         dao.executeInsertClient(client);
@@ -111,7 +111,7 @@ class DatabaseDAOTest {
         client.setPhoneNumber("09333333");
         client.setEMail("test@hotmail.com");
         client.setContractList(null);
-        client.setProfit(289);
+        client.setProfit(0);
         dao.executeInsertClient(client);
         dao.executeDeleteClient(client.getId());
         ObservableList<Client> clientsFromDatabase = FXCollections.observableArrayList();

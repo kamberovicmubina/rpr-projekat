@@ -1,8 +1,9 @@
 package sample.classes;
 
+import java.io.Serializable;
 import java.time.LocalDate;
 
-public class Person {
+public class Person implements Serializable {
     private String name;
     private LocalDate dateOfBirth;
     private String address;

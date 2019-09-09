@@ -3,10 +3,11 @@ package sample.classes;
 import sample.classes.Contract;
 import sample.classes.Person;
 
+import java.io.Serializable;
 import java.time.LocalDate;
 import java.util.List;
 
-public class Employee extends Person {
+public class Employee extends Person implements Serializable {
     List<Contract> contractList;
 
     public Employee(String name, LocalDate dateOfBirth, String address, String phoneNumber, String eMail, List<Contract> contractList) {

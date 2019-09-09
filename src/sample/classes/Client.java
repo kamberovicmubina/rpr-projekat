@@ -8,7 +8,7 @@ import sample.classes.Person;
 import java.io.Serializable;
 import java.time.LocalDate;
 
-public class Client extends Person implements Comparable<Client> {
+public class Client extends Person implements Comparable<Client>, Serializable {
     ObservableList<Contract> contractList = FXCollections.observableArrayList();
     double profit;
 

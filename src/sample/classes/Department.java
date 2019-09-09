@@ -1,8 +1,9 @@
 package sample.classes;
 
+import java.io.Serializable;
 import java.util.List;
 
-public class Department {
+public class Department implements Serializable {
     private String nameOfDepartment;
     private List<Employee> employees;
 

@@ -1,8 +1,9 @@
 package sample.classes;
 
+import java.io.Serializable;
 import java.time.LocalDate;
 
-public class Contract {
+public class Contract implements Serializable {
     private String titleOfContract;
     private Person person;
     private LocalDate signDate;

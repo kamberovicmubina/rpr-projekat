@@ -5,7 +5,9 @@ import javafx.beans.property.SimpleObjectProperty;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 
-public class Company {
+import java.io.Serializable;
+
+public class Company implements Serializable {
     private String name;
     private String address;
     private ObservableList<Department> departments;

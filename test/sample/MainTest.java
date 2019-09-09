@@ -6,7 +6,6 @@ import javafx.application.Platform;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
-import javafx.scene.control.DatePicker;
 import javafx.scene.control.TextField;
 import javafx.scene.input.KeyCode;
 import javafx.stage.Modality;
@@ -18,9 +17,6 @@ import org.testfx.api.FxRobot;
 import org.testfx.framework.junit5.ApplicationExtension;
 import org.testfx.framework.junit5.Start;
 import sample.controllers.Controller;
-import sample.controllers.NewClientController;
-
-import java.io.IOException;
 import java.util.*;
 import java.util.List;
 

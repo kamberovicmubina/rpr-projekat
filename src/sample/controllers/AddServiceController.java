@@ -18,11 +18,13 @@ public class AddServiceController implements Initializable {
     }
 
     public void onAdd () {
-        dao.executeInsertService(serviceField.getText());
-        Alert newAlert = new Alert(Alert.AlertType.CONFIRMATION, bundle.getString("serviceAdded"));
-        newAlert.setTitle(bundle.getString("success"));
-        newAlert.setHeaderText(null);
-        newAlert.show();
+        if (serviceField.getText() != null && !serviceField.getText().equals("")) {
+            dao.executeInsertService(serviceField.getText());
+            Alert newAlert = new Alert(Alert.AlertType.CONFIRMATION, bundle.getString("serviceAdded"));
+            newAlert.setTitle(bundle.getString("success"));
+            newAlert.setHeaderText(null);
+            newAlert.show();
+        }
     }
 
     @Override

@@ -8,6 +8,7 @@ public class Contract {
     private LocalDate signDate;
     private LocalDate endDate;
     private int id;
+    private Double value;
 
     public int getId() {
         return id;
@@ -22,6 +23,14 @@ public class Contract {
         this.person = person;
         this.signDate = signDate;
         this.endDate = endDate;
+    }
+
+    public Contract(String title, Person person, LocalDate signDate, LocalDate endDate, Double value) {
+        titleOfContract = title;
+        this.person = person;
+        this.signDate = signDate;
+        this.endDate = endDate;
+        this.value = value;
     }
 
     public Contract() {
@@ -59,4 +68,11 @@ public class Contract {
         this.endDate = endDate;
     }
 
+    public Double getValue() {
+        return value;
+    }
+
+    public void setValue(Double value) {
+        this.value = value;
+    }
 }

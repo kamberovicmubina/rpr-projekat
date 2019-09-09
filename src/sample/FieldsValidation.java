@@ -47,4 +47,13 @@ public class FieldsValidation {
         LocalDate now = LocalDate.now();
         return n != null && n.isAfter(now);
     }
+
+    public static boolean validDouble (String s) {
+        try {
+            Double castTest = Double.parseDouble(s);
+        } catch (Exception e) {
+            return false;
+        }
+        return true;
+    }
 }

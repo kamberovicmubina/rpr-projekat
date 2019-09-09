@@ -1,10 +1,7 @@
 package sample.controllers;
 
 import javafx.fxml.Initializable;
-import javafx.scene.control.Alert;
-import javafx.scene.control.Button;
-import javafx.scene.control.DatePicker;
-import javafx.scene.control.TextField;
+import javafx.scene.control.*;
 import javafx.stage.Stage;
 import sample.classes.Company;
 import sample.classes.Contract;
@@ -19,6 +16,7 @@ public class AddContractController implements Initializable {
     public DatePicker fromPicker;
     public DatePicker toPicker;
     public Button cancelBtn;
+    public TextField contractValue;
     private DatabaseDAO dao;
     private Company company;
     private ResourceBundle bundle;
@@ -34,9 +32,10 @@ public class AddContractController implements Initializable {
     }
 
     public void onSave () {
-        if (FieldsValidation.validDate(fromPicker.getValue()) && FieldsValidation.dateInFuture(toPicker.getValue())) {
+        if (FieldsValidation.validDate(fromPicker.getValue()) && FieldsValidation.dateInFuture(toPicker.getValue()) && FieldsValidation.validDouble(contractValue.getText())) {
             Contract newContract = new Contract(titleField.getText(), company.getClickedClient(), fromPicker.getValue(), toPicker.getValue());
             newContract.setId(dao.getNextAvailableContractId());
+            newContract.setValue(Double.parseDouble(contractValue.getText()));
             dao.executeInsertContract(newContract);
             Alert newAlert = new Alert(Alert.AlertType.CONFIRMATION, bundle.getString("contractAdded"));
             newAlert.setTitle(bundle.getString("success"));

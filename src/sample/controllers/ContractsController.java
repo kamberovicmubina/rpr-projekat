@@ -29,6 +29,7 @@ public class ContractsController implements Initializable {
     public TableColumn<Contract, String> Title;
     public TableColumn<Contract, LocalDate> DateFrom;
     public TableColumn<Contract, LocalDate> DateTo;
+    public TableColumn<Contract, Double> Value;
     private DatabaseDAO dao;
     private Company company;
     private ResourceBundle bundle;
@@ -45,6 +46,7 @@ public class ContractsController implements Initializable {
         Title.setCellValueFactory(new PropertyValueFactory<>("titleOfContract"));
         DateFrom.setCellValueFactory(new PropertyValueFactory<>("signDate"));
         DateTo.setCellValueFactory(new PropertyValueFactory<>("endDate"));
+        Value.setCellValueFactory(new PropertyValueFactory<>("value"));
         clientContracts.addAll(dao.executeGetClientContractsQuery(company.getClickedClient().getId()));
         contractTableView.setItems(clientContracts);
         contractTableView.setOnMouseClicked(mouseEvent -> {

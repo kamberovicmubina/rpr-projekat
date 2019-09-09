@@ -14,7 +14,8 @@ import java.util.Scanner;
 public class DatabaseDAO {
     private static DatabaseDAO instance;
     private Connection connection;
-    private PreparedStatement getCompanyQuery, getServicesQuery, getClientsQuery, getClientContractsQuery, getOneClientQuery, getOnePersonQuery, insertCompanyQuery,
+    private PreparedStatement getCompanyQuery, getServicesQuery, getClientsQuery, getClientContractsQuery, getOneClientQuery, getOnePersonQuery,
+                                getOneContractQuery, insertCompanyQuery,
                                 insertClientQuery, insertContractQuery, insertPersonQuery, deleteClientQuery, deleteContractQuery, deleteServiceQuery, changeClientQuery,
                                 changeCompanyQuery, insertServiceQuery;
 
@@ -205,7 +206,8 @@ public class DatabaseDAO {
                 String endDate = rs.getString(5);
                 LocalDate endLocal = getLocalDateFromString(endDate);
                 Person person = executeGetOneClient(idClient);
-                Contract contract = new Contract(title, person, signLocal, endLocal);
+                double value = rs.getDouble(6);
+                Contract contract = new Contract(title, person, signLocal, endLocal, value);
                 int idContract = rs.getInt(2);
                 contract.setId(idContract);
                 contracts.add(contract);
@@ -220,7 +222,7 @@ public class DatabaseDAO {
         return contracts;
     }
 
-    private Client executeGetOneClient (int idClient) {
+    public Client executeGetOneClient (int idClient) {
         Client client = null;
         try {
             getOneClientQuery = connection.prepareStatement("SELECT * FROM client WHERE id=?");
@@ -409,19 +411,20 @@ public class DatabaseDAO {
 
     public void executeInsertContract (Contract contract) {
         try {
-            insertContractQuery = connection.prepareStatement("INSERT INTO contract VALUES (?,?,?,?,?)");
+            insertContractQuery = connection.prepareStatement("INSERT INTO contract VALUES (?,?,?,?,?,?)");
             insertContractQuery.setString(1, contract.getTitleOfContract());
             insertContractQuery.setInt(2, contract.getId());
             insertContractQuery.setInt(3, contract.getPerson().getId());
             insertContractQuery.setString(4, getStringFromLocalDate(contract.getSignDate()));
             insertContractQuery.setString(5, getStringFromLocalDate(contract.getEndDate()));
+            insertContractQuery.setDouble(6, contract.getValue());
             insertContractQuery.executeUpdate();
         } catch (SQLException e) {
             e.printStackTrace();
         }
         // update client
         try {
-            changeCompanyQuery = connection.prepareStatement("UPDATE client SET contracts=? WHERE id=?");
+            changeClientQuery = connection.prepareStatement("UPDATE client SET contracts=?, profit=? WHERE id=?");
             PreparedStatement helpStatement = connection.prepareStatement("SELECT contracts FROM client WHERE id=?");
             helpStatement.setInt(1, contract.getPerson().getId()) ;
             ResultSet rs = helpStatement.executeQuery();
@@ -429,9 +432,12 @@ public class DatabaseDAO {
             while (rs.next()) {
                 newContracts = addIdToString(rs.getString(1), contract.getId());
             }
-            changeCompanyQuery.setString(1, newContracts);
-            changeCompanyQuery.setInt(2, contract.getPerson().getId());
-            changeCompanyQuery.executeUpdate();
+            changeClientQuery.setString(1, newContracts);
+            Client client = executeGetOneClient(contract.getPerson().getId());
+            double value = client.getProfit() + contract.getValue();
+            changeClientQuery.setDouble(2, value);
+            changeClientQuery.setInt(3, contract.getPerson().getId());
+            changeClientQuery.executeUpdate();
         } catch (SQLException e) {
             e.printStackTrace();
         }
@@ -524,6 +530,7 @@ public class DatabaseDAO {
 
     public void executeDeleteContract (int id) {
         int personId = 0;
+        Contract contract = executeGetOneContract(id);
         try {
             PreparedStatement statement = connection.prepareStatement("SELECT person FROM contract WHERE id=?");
             statement.setInt(1, id);
@@ -538,7 +545,7 @@ public class DatabaseDAO {
         }
         // update client
         try {
-            changeCompanyQuery = connection.prepareStatement("UPDATE client SET contracts=? WHERE id=?");
+            changeClientQuery = connection.prepareStatement("UPDATE client SET contracts=?, profit=? WHERE id=?");
             PreparedStatement helpStatement = connection.prepareStatement("SELECT contracts FROM client WHERE id=?");
             helpStatement.setInt(1, personId);
             ResultSet rs = helpStatement.executeQuery();
@@ -546,13 +553,38 @@ public class DatabaseDAO {
             while (rs.next()) {
                 newContracts = deleteIdFromString(rs.getString(1), id);
             }
-            changeCompanyQuery.setString(1, newContracts);
-            changeCompanyQuery.setInt(2, personId);
-            changeCompanyQuery.executeUpdate();
+            changeClientQuery.setString(1, newContracts);
+            Client client = executeGetOneClient(personId);
+            double value = client.getProfit() - contract.getValue();
+            changeClientQuery.setDouble(2, value);
+            changeClientQuery.setInt(3, personId);
+            changeClientQuery.executeUpdate();
         } catch (SQLException e) {
             e.printStackTrace();
         }
         updateCompanyClients(personId);
+    }
+
+    private Contract executeGetOneContract(int id) {
+        Contract contract = null;
+        try {
+            getOneContractQuery = connection.prepareStatement("SELECT * FROM contract WHERE id=?");
+            getOneContractQuery.setInt(1, id);
+            ResultSet rs = getOneContractQuery.executeQuery();
+            while (rs.next()) {
+                String title = rs.getString(1);
+                Person person = executeGetOnePerson(rs.getInt(3));
+                LocalDate sign = getLocalDateFromString(rs.getString(4));
+                LocalDate end = getLocalDateFromString(rs.getString(5));
+                double value = rs.getDouble(6);
+                contract = new Contract(title, person, sign, end);
+                contract.setValue(value);
+                contract.setId(id);
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return contract;
     }
 
     public void executeChangeClient (Client client) {

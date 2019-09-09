@@ -1,6 +1,7 @@
 package sample.controllers;
 
 import javafx.beans.property.*;
+import javafx.event.EventHandler;
 import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
 import javafx.scene.Parent;
@@ -9,6 +10,7 @@ import javafx.scene.control.*;
 import javafx.scene.layout.Region;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
+import javafx.stage.WindowEvent;
 import sample.*;
 import sample.classes.Client;
 import sample.classes.Company;
@@ -26,12 +28,13 @@ public class ClientController implements Initializable {
     public TextField phoneField;
     public TextField eMailField;
     public Button cancelButton;
-    public Spinner<Double> profitSpinner;
+    public TextField profitTextField;
     private SimpleStringProperty nameProperty;
     private SimpleStringProperty addressProperty;
     private SimpleStringProperty phoneProperty;
     private SimpleStringProperty eMailProperty;
     private ObjectProperty<LocalDate> dateOfBirthProperty;
+    private SimpleStringProperty profitProperty;
     private DatabaseDAO dao;
     private Company company;
     private boolean nameValid = true;
@@ -49,6 +52,7 @@ public class ClientController implements Initializable {
         phoneProperty = new SimpleStringProperty(this.company.getClickedClient().getPhoneNumber());
         eMailProperty = new SimpleStringProperty(this.company.getClickedClient().getEMail());
         dateOfBirthProperty = new SimpleObjectProperty<>(this.company.getClickedClient().getDateOfBirth());
+        profitProperty = new SimpleStringProperty(String.valueOf(this.company.getClickedClient().getProfit()));
     }
 
 
@@ -61,16 +65,14 @@ public class ClientController implements Initializable {
         phoneField.textProperty().bindBidirectional(phoneProperty);
         eMailField.textProperty().bindBidirectional(eMailProperty);
         dateOfBirthPicker.valueProperty().bindBidirectional(dateOfBirthProperty);
+        profitTextField.textProperty().bindBidirectional(profitProperty);
 
         nameField.setText(company.getClickedClient().getName());
         addressField.setText(company.getClickedClient().getAddress());
         phoneField.setText(company.getClickedClient().getPhoneNumber());
         eMailField.setText(company.getClickedClient().getEMail());
         dateOfBirthPicker.setValue(company.getClickedClient().getDateOfBirth());
-
-        SpinnerValueFactory<Double> valueFactory = new SpinnerValueFactory.DoubleSpinnerValueFactory(1, 10000000);
-        profitSpinner.setValueFactory(valueFactory);
-        profitSpinner.getValueFactory().setValue(company.getClickedClient().getProfit());
+        profitTextField.setText(String.valueOf(company.getClickedClient().getProfit()));
 
         // validation of fields in case they are changed
         nameField.textProperty().addListener((observableValue, o, n) -> {
@@ -147,7 +149,7 @@ public class ClientController implements Initializable {
             String eMail = eMailField.getText();
             Client newClient = new Client(name, date, address, phone, eMail, null);
             newClient.setId(company.getClickedClient().getId());
-            newClient.setProfit(profitSpinner.getValue());
+            newClient.setProfit(Double.parseDouble(profitTextField.getText()));
             newClient.setContractList(company.getClickedClient().getContractList());
             dao.executeChangeClient(newClient);
             Alert alert = new Alert(Alert.AlertType.INFORMATION);
@@ -194,7 +196,16 @@ public class ClientController implements Initializable {
             secondaryStage.setResizable(false);
             secondaryStage.setScene(new Scene(root, Region.USE_COMPUTED_SIZE, Region.USE_COMPUTED_SIZE));
             secondaryStage.initModality(Modality.APPLICATION_MODAL);
+            secondaryStage.setOnCloseRequest(new EventHandler<WindowEvent>() {
+                @Override
+                public void handle(WindowEvent windowEvent) {
+                    profitTextField.clear();
+                    Client client = dao.executeGetOneClient(company.getClickedClient().getId());
+                    profitTextField.setText(String.valueOf(client.getProfit()));
+                }
+            });
             secondaryStage.show();
+
         }
     }
 
